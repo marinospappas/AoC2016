@@ -5,33 +5,40 @@ import mpdev.springboot.aoc2016.model.PuzzlePartSolution
 import mpdev.springboot.aoc2016.model.PuzzleSolution
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
+import kotlin.system.measureTimeMillis
 
-abstract class PuzzleSolver {
+abstract class PuzzleSolver(inputDataReader: InputDataReader, val day: Int) {
 
     protected val log: Logger = LoggerFactory.getLogger(this::class.java)
 
-    @Autowired
-    lateinit var inputDataReader: InputDataReader
+    val inputData: List<String>
 
-    lateinit var inputData: List<String>
+    var initTime: Long = 0
 
-    var day: Int = 0
+    init {
+        inputData = inputDataReader.read(day)
+    }
 
     fun solve(): PuzzleSolution {
         log.info("solver for day {} called", day)
-        inputData = inputDataReader.read(day)
-        val initTime = initSolver()
-        val part1 = solvePart1()
-        val part2 = solvePart2()
-        log.info("day {} part 1 answer: {} part 2 answer: {}", day, part1.result, part2.result)
-        return PuzzleSolution(day = day, initTime = initTime.first, initTimeUnit = initTime.second,
-            solution = setOf(part1, part2))
+        val part1: Any
+        val part2: Any
+        val elapsed1 = measureTimeMillis {
+            part1 = solvePart1()
+        }
+        val elapsed2 = measureTimeMillis {
+            part2 = solvePart2()
+        }
+        log.info("day {} part 1 answer: {} part 2 answer: {}", day, part1, part2)
+        return PuzzleSolution(day = day, initTime = initTime,
+            solution = setOf(
+                PuzzlePartSolution(1, part1.toString(), elapsed1),
+                PuzzlePartSolution(2, part2.toString(), elapsed2)
+            )
+        )
     }
 
-    abstract fun setDay()
-    abstract fun initSolver(): Pair<Long,String>
-    abstract fun solvePart1(): PuzzlePartSolution
-    abstract fun solvePart2(): PuzzlePartSolution
+    abstract fun solvePart1(): Any
+    abstract fun solvePart2(): Any
 
 }

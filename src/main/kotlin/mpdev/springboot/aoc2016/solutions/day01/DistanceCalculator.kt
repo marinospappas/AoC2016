@@ -1,10 +1,15 @@
 package mpdev.springboot.aoc2016.solutions.day01
 
+import mpdev.springboot.aoc2016.input.InputDataReader
+import mpdev.springboot.aoc2016.solutions.PuzzleSolver
 import mpdev.springboot.aoc2016.utils.AocException
 import mpdev.springboot.aoc2016.utils.GridUtils
 import mpdev.springboot.aoc2016.utils.Point
+import org.springframework.stereotype.Component
+import kotlin.system.measureTimeMillis
 
-class DistanceCalculator(input: List<String>) {
+@Component
+class DistanceCalculator(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 1) {
 
     companion object {
         val START_HEADING = GridUtils.Direction.UP
@@ -12,11 +17,14 @@ class DistanceCalculator(input: List<String>) {
 
     }
 
-    val directions: List<Step> = input[0].split(Regex(", *"))
-        .map { x -> Step(
-            GridUtils.Direction.of(x[0]),
-            x.substring(1).toInt()
-        ) }
+    val directions: List<Step>
+
+    init {
+        initTime = measureTimeMillis {
+            directions = inputData[0].split(Regex(", *"))
+                .map { x -> Step(GridUtils.Direction.of(x[0]), x.substring(1).toInt()) }
+        }
+    }
 
     fun findNewPosition(): Point {
         var curHeading = START_HEADING
@@ -44,6 +52,17 @@ class DistanceCalculator(input: List<String>) {
         }
         throw AocException("could not find any position visited twice")
     }
+
+    override fun solvePart1(): Int {
+        val newPosition = findNewPosition()
+        return newPosition.manhattan(START_POSITION)
+    }
+
+    override fun solvePart2(): Int {
+        val newPosition = findPositionVisitedTwice()
+        return newPosition.manhattan(START_POSITION)
+    }
+
 }
 
 data class Step(val turnDir: GridUtils.Direction, val steps: Int)

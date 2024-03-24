@@ -1,13 +1,23 @@
 package mpdev.springboot.aoc2016.solutions.day02
 
+import mpdev.springboot.aoc2016.input.InputDataReader
+import mpdev.springboot.aoc2016.solutions.PuzzleSolver
 import mpdev.springboot.aoc2016.utils.Grid
 import mpdev.springboot.aoc2016.utils.GridUtils
 import mpdev.springboot.aoc2016.utils.Point
+import org.springframework.stereotype.Component
+import kotlin.system.measureTimeMillis
 
-class KeypadDecoder(input: List<String>) {
+@Component
+class KeypadDecoder(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 2) {
 
-    val instructions: List<List<GridUtils.Direction>> = input
-        .map { line -> line.toList().map { c -> GridUtils.Direction.of(c) } }
+    val instructions: List<List<GridUtils.Direction>>
+
+    init {
+        initTime = measureTimeMillis {
+            instructions = inputData.map { line -> line.toList().map { c -> GridUtils.Direction.of(c) } }
+        }
+    }
 
     private fun nextKey(curKey: Point, instrList: List<GridUtils.Direction>, keypad: Grid<Char>): Point {
         var curPosition = curKey
@@ -19,16 +29,21 @@ class KeypadDecoder(input: List<String>) {
         return curPosition
     }
 
-    fun findCode(keypad: Grid<Char>): String {
-        var curKey = getStartingPosition(keypad)
+    fun Grid<Char>.findCode(): String {
+        var curKey = getStartingPosition(this)
         return instructions.map { instr ->
-            keypad.getDataPoint(nextKey(curKey, instr, keypad).also { curKey = it })
+            getDataPoint(nextKey(curKey, instr, this).also { curKey = it })
         }.joinToString("")
     }
 
+    override fun solvePart1(): String = keypad1.findCode()
+
+    override fun solvePart2(): String = keypad2.findCode()
+
     companion object {
+        private const val START_KEY = '5'
         val keypad1 = Grid(listOf("123", "456", "789"), ('0'..'9').associateWith { it }, border = 0)
-        val keypad2List = listOf(
+        private val keypad2List = listOf(
             "  1  ",
             " 234 ",
             "56789",
@@ -39,10 +54,10 @@ class KeypadDecoder(input: List<String>) {
             .associateBy { Point(keypad2List[y].indexOf(it), y) }
             .filterNot { e -> e.value == ' ' }
         }.flatMap { map -> map.entries }.associate { Pair(it.key, it.value) }
-        val keypad2 = Grid(keypad2GridMap, (setOf('1','2','3','4','5','6','7','8','9') + setOf('A','B','C','D')).associateWith { it }, border = 0)
+        val keypad2 = Grid(keypad2GridMap, (('0'..'9').toSet() + ('A'..'D').toSet()).associateWith { it }, border = 0)
 
         fun getStartingPosition(keypad: Grid<Char>): Point =
-            keypad.getDataPoints().filter { e -> e.value == '5' }.map { e -> e.key }.first()
+            keypad.getDataPoints().filter { e -> e.value == START_KEY }.map { e -> e.key }.first()
 
     }
 }
