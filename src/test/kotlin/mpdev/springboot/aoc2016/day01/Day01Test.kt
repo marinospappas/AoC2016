@@ -52,6 +52,7 @@ class Day01Test {
     @Order(5)
     fun `Finds Position Visited Twice`() {
         inputDataReader.testInput = listOf("R8, R4, R4, R8")
+        solver = DistanceCalculator(inputDataReader)
         val newPosition = solver.findPositionVisitedTwice()
         val result = newPosition.manhattan(DistanceCalculator.START_POSITION)
         println("New Position $newPosition")
@@ -62,6 +63,7 @@ class Day01Test {
     @Order(6)
     fun `Solves Part 2`() {
         inputDataReader.testInput = listOf("R8, R4, R4, R8")
+        solver = DistanceCalculator(inputDataReader)
         assertThat(solver.solvePart2()).isEqualTo(4)
     }
 }
