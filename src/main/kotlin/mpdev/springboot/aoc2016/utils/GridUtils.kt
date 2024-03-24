@@ -93,6 +93,8 @@ object GridUtils {
         DOWN(Point(0, 1)),
         LEFT(Point(-1, 0));
 
+        fun turn(leftRight: Direction) = if (leftRight == RIGHT) turnRight() else turnLeft()
+
         fun turn(leftRight: Int) = if (leftRight == 1) turnRight() else turnLeft()
 
         fun turnRight() = when (this) {
