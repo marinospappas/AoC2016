@@ -9,7 +9,7 @@ class InputDataReader(@Value("\${input.filename.pattern}") var inputFileNamePatt
 
     var testInput = listOf<String>()
 
-    fun read(day: Int): List<String>  = testInput.ifEmpty {
+    fun read(day: Int): List<String> = testInput.ifEmpty {
         File("$inputFileNamePattern${String.format("%02d",day)}.txt").readLines()
     }
 
