@@ -28,12 +28,10 @@ class DistanceCalculator(inputDataReader: InputDataReader): PuzzleSolver(inputDa
 
     fun findNewPosition(): Point {
         var curHeading = START_HEADING
-        var curPosition = START_POSITION
-        directions.forEach { dir ->
+        return directions.fold(START_POSITION) { acc, dir ->
             curHeading = curHeading.turn(dir.turnDir)
-            curPosition += curHeading.increment.times(dir.steps)
+            acc + curHeading.increment.times(dir.steps)
         }
-        return curPosition
     }
 
     fun findPositionVisitedTwice(): Point {
