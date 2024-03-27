@@ -20,6 +20,18 @@ fun String.splitRepeatedChars(): List<String> {
     return s.split(delimiter)
 }
 
+fun String.toFrequency(): String =
+    this.toList().associateWith { c -> this.count { it == c } }
+        .entries
+        .sortedWith { e1, e2 ->
+            if (e1.value == e2.value)
+                e1.key.compareTo(e2.key)
+            else
+                e2.value.compareTo(e1.value)
+        }
+        .map { it.key }
+        .joinToString("")
+
 fun Int.lastDigit() = this % 10
 
 fun Int.numOfDigits() = abs(this).toString().length
