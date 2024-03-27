@@ -6,17 +6,14 @@ import mpdev.springboot.aoc2016.utils.Grid
 import mpdev.springboot.aoc2016.utils.GridUtils
 import mpdev.springboot.aoc2016.utils.Point
 import org.springframework.stereotype.Component
-import kotlin.system.measureTimeMillis
 
 @Component
 class KeypadDecoder(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 2) {
 
-    val instructions: List<List<GridUtils.Direction>>
+    lateinit var instructions: List<List<GridUtils.Direction>>
 
-    init {
-        initTime = measureTimeMillis {
-            instructions = inputData.map { line -> line.toList().map { c -> GridUtils.Direction.of(c) } }
-        }
+    override fun initialize() {
+        instructions = inputData.map { line -> line.toList().map { c -> GridUtils.Direction.of(c) } }
     }
 
     private fun nextKey(curKey: Point, instrList: List<GridUtils.Direction>, keypad: Grid<Char>): Point {

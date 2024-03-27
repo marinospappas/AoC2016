@@ -5,21 +5,16 @@ import mpdev.springboot.aoc2016.input.InputDataReader
 import mpdev.springboot.aoc2016.solutions.PuzzleSolver
 import mpdev.springboot.aoc2016.utils.*
 import org.springframework.stereotype.Component
-import kotlin.system.measureTimeMillis
 
 @Component
 class TriangleSolver(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 3) {
 
-    val triangles: List<Triple<Int,Int,Int>>
+    lateinit var triangles: List<Triple<Int,Int,Int>>
     val triangles2 = mutableListOf<Triple<Int,Int,Int>>()
 
-    init {
-        initTime = measureTimeMillis {
-            val aocInputList: List<AoCInput> = InputUtils(AoCInput::class.java).readAoCInput(inputData)
-            triangles = aocInputList.map { item ->
-                Triple(item.len[0], item.len[1], item.len[2])
-            }
-        }
+    override fun initialize() {
+        val aocInputList: List<AoCInput> = InputUtils(AoCInput::class.java).readAoCInput(inputData)
+        triangles = aocInputList.map { item -> Triple(item.len[0], item.len[1], item.len[2]) }
     }
 
     fun setTriangles2() {

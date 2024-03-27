@@ -6,7 +6,6 @@ import mpdev.springboot.aoc2016.utils.AocException
 import mpdev.springboot.aoc2016.utils.GridUtils
 import mpdev.springboot.aoc2016.utils.Point
 import org.springframework.stereotype.Component
-import kotlin.system.measureTimeMillis
 
 @Component
 class DistanceCalculator(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 1) {
@@ -17,13 +16,10 @@ class DistanceCalculator(inputDataReader: InputDataReader): PuzzleSolver(inputDa
 
     }
 
-    val directions: List<Step>
+    lateinit var directions: List<Step>
 
-    init {
-        initTime = measureTimeMillis {
-            directions = inputData[0].split(Regex(", *"))
-                .map { x -> Step(GridUtils.Direction.of(x[0]), x.substring(1).toInt()) }
-        }
+    override fun initialize() {
+        directions = inputData[0].split(Regex(", *")).map { x -> Step(GridUtils.Direction.of(x[0]), x.substring(1).toInt()) }
     }
 
     fun findNewPosition(): Point {

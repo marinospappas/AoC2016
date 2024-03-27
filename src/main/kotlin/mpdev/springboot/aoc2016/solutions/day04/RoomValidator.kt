@@ -6,18 +6,15 @@ import mpdev.springboot.aoc2016.solutions.PuzzleSolver
 import mpdev.springboot.aoc2016.solutions.day04.RoomValidator.Companion.alphabet
 import mpdev.springboot.aoc2016.utils.*
 import org.springframework.stereotype.Component
-import kotlin.system.measureTimeMillis
 
 @Component
 class RoomValidator(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 4) {
 
-    val rooms: List<Room>
+    lateinit var rooms: List<Room>
 
-    init {
-        initTime = measureTimeMillis {
-            val aocInputList: List<AoCInput> = InputUtils(AoCInput::class.java).readAoCInput(inputData)
-            rooms = aocInputList.map { Room(it.id.subList(0,it.id.lastIndex), it.id.last().toInt(), it.chksum) }
-        }
+    override fun initialize() {
+        val aocInputList: List<AoCInput> = InputUtils(AoCInput::class.java).readAoCInput(inputData)
+        rooms = aocInputList.map { Room(it.id.subList(0, it.id.lastIndex), it.id.last().toInt(), it.chksum) }
     }
 
     override fun solvePart1(): Int = rooms.filter { it.isValid() }.sumOf { it.sectorId }
