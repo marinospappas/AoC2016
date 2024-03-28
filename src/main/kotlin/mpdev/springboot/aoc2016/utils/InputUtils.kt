@@ -81,7 +81,7 @@ class InputUtils(inputClazz: Class<*>) {
                delimiters = arrayOf("NA-NA-NA-NA-NA-NA-NA")
         }
         else
-            throw AocException("AoCInput class must be annotated @InputClass")
+            throw AocException("AoCInput class must be annotated @AocInClass")
         if (clazz.isAnnotationPresent(AocInRemovePatterns::class.java)) {
             removePatterns = clazz.getAnnotation(AocInRemovePatterns::class.java).patterns.toList()
         }
