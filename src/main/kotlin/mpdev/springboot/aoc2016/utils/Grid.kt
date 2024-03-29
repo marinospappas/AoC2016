@@ -66,6 +66,12 @@ open class Grid<T>(inputGridVisual: List<String> = emptyList(),
         data.remove(p)
     }
 
+    open fun getColumn(x: Int): Set<Map.Entry<Point,T>> =
+        data.entries.filter { it.key.x == x }.toSet()
+
+    open fun getRow(y: Int): Set<Map.Entry<Point,T>> =
+        data.entries.filter { it.key.y == y }.toSet()
+
     fun getAdjacentArea(p: Point): Set<Point> {
         val area = mutableSetOf<Point>()
         val value = data[p] ?: return area
