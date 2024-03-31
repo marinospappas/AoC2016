@@ -39,7 +39,6 @@ class MicrochipFactory(inputDataReader: InputDataReader): PuzzleSolver(inputData
                 val lowChip = bot.chips.min()
                 val hichChip = bot.chips.max()
                 bot.chips.clear()
-                for (out in setOf(bot.outputLow, bot.outputHigh))
                 if (bot.outputLow.first == Destination.Bot)
                     processingQ.add(Pair(lowChip, bot.outputLow.second))
                 else
