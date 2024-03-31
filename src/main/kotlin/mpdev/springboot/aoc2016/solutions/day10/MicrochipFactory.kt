@@ -18,13 +18,13 @@ class MicrochipFactory(inputDataReader: InputDataReader): PuzzleSolver(inputData
     override fun initialize() {
         val aocInputList1: List<AoCInput> = InputUtils(AoCInput::class.java).readAoCInput(inputData)
         robots = aocInputList1.filter { it.recId == "bot" }.associate {
-            it.id to
-            Bot(it.id,
+            it.id to Bot(it.id,
                 Pair(Destination.valueOf(it.dest1.replaceFirstChar { c -> if (c.isLowerCase()) c.titlecase() else c.toString() }), it.dest1Id),
                 Pair(Destination.valueOf(it.dest2.replaceFirstChar { c -> if (c.isLowerCase()) c.titlecase() else c.toString() }), it.dest2Id))
         }
         inputMap = aocInputList1.filter { it.recId == "value" }.associate { it.id to it.dest1Id }
         inputMap.forEach { (k, v) -> robots[v]?.chips?.add(k) }
+        output.forEach { (_,v) -> v.clear() }
     }
 
     fun runProcess(): Int {
@@ -39,6 +39,7 @@ class MicrochipFactory(inputDataReader: InputDataReader): PuzzleSolver(inputData
                 val lowChip = bot.chips.min()
                 val hichChip = bot.chips.max()
                 bot.chips.clear()
+                for (out in setOf(bot.outputLow, bot.outputHigh))
                 if (bot.outputLow.first == Destination.Bot)
                     processingQ.add(Pair(lowChip, bot.outputLow.second))
                 else
@@ -71,7 +72,7 @@ class MicrochipFactory(inputDataReader: InputDataReader): PuzzleSolver(inputData
 
     companion object {
         var resultChips = listOf(17,61)
-        var debug = true //false
+        var debug = false
     }
 }
 
