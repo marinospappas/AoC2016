@@ -97,5 +97,4 @@ data class AoCInput(
     @AocInField(2) val dest1Id: Int,
     @AocInField(3) val dest2: String,
     @AocInField(3) val dest2Id: Int
-
 )
