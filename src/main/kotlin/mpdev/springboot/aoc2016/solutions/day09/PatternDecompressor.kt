@@ -42,12 +42,12 @@ class PatternDecompressor(inputDataReader: InputDataReader): PuzzleSolver(inputD
             var matchResult: MatchResult?
             while (regex.find(s, index).also { matchResult = it } != null) {
                 val match: MatchResult = matchResult ?: throw AocException("unexpected match error")
-                val startMatchIndx = match.groups[0]?.range?.first ?: break
-                val endMatchIndx = match.groups[0]?.range?.last ?: break
-                val (a, b) = match.destructured
-                result += (startMatchIndx - index)
-                result += b.toInt() * decompressedV2Length(s.substring(endMatchIndx + 1, endMatchIndx + a.toInt() + 1))
-                index = endMatchIndx + a.toInt() + 1
+                val startMarkerIndx = match.groups[0]?.range?.first ?: break
+                val endMarkerIndx = match.groups[0]?.range?.last ?: break
+                val (aMarker, bMarker) = match.destructured
+                result += (startMarkerIndx - index)
+                result += bMarker.toInt() * decompressedV2Length(s.substring(endMarkerIndx + 1, endMarkerIndx + aMarker.toInt() + 1))
+                index = endMarkerIndx + aMarker.toInt() + 1
             }
             return result + (s.length - index)
         }
