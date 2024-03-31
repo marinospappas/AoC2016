@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 
 class Day09Test {
 
-    private val day = 8                                     ///////// Update this for a new dayN test
+    private val day = 9                                     ///////// Update this for a new dayN test
     private lateinit var solver: PatternDecompressor       ///////// Update this for a new dayN test
     private val inputDataReader = InputDataReader("src/test/resources/inputdata/input")
 
@@ -91,7 +91,7 @@ class Day09Test {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     fun `Calculates Length for Decompressed Patterns V2`() {
         val patterns = listOf(
             "(3x3)XYZ",
