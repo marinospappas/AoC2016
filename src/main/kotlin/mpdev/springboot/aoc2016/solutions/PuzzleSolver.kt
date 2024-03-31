@@ -13,17 +13,16 @@ abstract class PuzzleSolver(inputDataReader: InputDataReader, val day: Int) {
 
     val inputData: List<String>
 
-    private var initTime: Long = 0
 
     init {
         inputData = inputDataReader.read(day)
-        initTime = measureTimeMillis { initialize() }
     }
 
     fun solve(): PuzzleSolution {
         log.info("solver for day {} called", day)
         val part1: Any
         val part2: Any
+        val initTime = measureTimeMillis { initialize() }
         val elapsed1 = measureTimeMillis { part1 = solvePart1() }
         val elapsed2 = measureTimeMillis { part2 = solvePart2() }
         log.info("day {} part 1 answer: {} part 2 answer: {}", day, part1, part2)

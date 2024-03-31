@@ -24,10 +24,7 @@ class MicrochipFactory(inputDataReader: InputDataReader): PuzzleSolver(inputData
                 Pair(Destination.valueOf(it.dest2.replaceFirstChar { c -> if (c.isLowerCase()) c.titlecase() else c.toString() }), it.dest2Id))
         }
         inputMap = aocInputList1.filter { it.recId == "value" }.associate { it.id to it.dest1Id }
-    }
-
-    fun processInput() {
-        inputMap.forEach { k, v -> robots[v]?.chips?.add(k) }
+        inputMap.forEach { (k, v) -> robots[v]?.chips?.add(k) }
     }
 
     fun runProcess(): Int {
@@ -66,10 +63,7 @@ class MicrochipFactory(inputDataReader: InputDataReader): PuzzleSolver(inputData
     fun findResultBot(): Int =
         robots.values.firstOrNull { b -> b.chips.sorted() == resultChips }?.id ?: -1
 
-    override fun solvePart1(): Int {
-        processInput()
-        return runProcess()
-    }
+    override fun solvePart1(): Int  = runProcess()
 
     override fun solvePart2(): Int =
         output.entries.filter { it.key <= 2 }.map { it.value.first() }
@@ -77,7 +71,7 @@ class MicrochipFactory(inputDataReader: InputDataReader): PuzzleSolver(inputData
 
     companion object {
         var resultChips = listOf(17,61)
-        var debug = false
+        var debug = true //false
     }
 }
 

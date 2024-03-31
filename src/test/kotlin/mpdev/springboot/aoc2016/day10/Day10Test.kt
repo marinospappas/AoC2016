@@ -39,7 +39,6 @@ class Day10Test {
     @Test
     @Order(2)
     fun `Processes Chips`() {
-        solver.processInput()
         solver.robots.forEach { it.println() }
         val result = solver.runProcess()
         assertThat(result).isEqualTo(2)
