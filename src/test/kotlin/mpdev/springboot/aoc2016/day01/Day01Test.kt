@@ -12,12 +12,12 @@ class Day01Test {
 
     private val day = 1                                     ///////// Update this for a new dayN test
     private lateinit var solver: DistanceCalculator         ///////// Update this for a new dayN test
-    private lateinit var inputDataReader: InputDataReader
+    private val inputDataReader = InputDataReader("src/test/resources/inputdata/input")
 
     @BeforeEach
     fun setup() {
-        inputDataReader = InputDataReader("src/test/resources/inputdata/input")
         solver = DistanceCalculator(inputDataReader)
+        solver.initialize()
     }
 
     @Test
@@ -53,6 +53,7 @@ class Day01Test {
     fun `Finds Position Visited Twice`() {
         inputDataReader.testInput = listOf("R8, R4, R4, R8")
         solver = DistanceCalculator(inputDataReader)
+        solver.initialize()
         val newPosition = solver.findPositionVisitedTwice()
         val result = newPosition.manhattan(DistanceCalculator.START_POSITION)
         println("New Position $newPosition")
@@ -64,6 +65,7 @@ class Day01Test {
     fun `Solves Part 2`() {
         inputDataReader.testInput = listOf("R8, R4, R4, R8")
         solver = DistanceCalculator(inputDataReader)
+        solver.initialize()
         assertThat(solver.solvePart2()).isEqualTo(4)
     }
 }

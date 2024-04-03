@@ -19,6 +19,7 @@ class Day08Test {
     fun setup() {
         DisplayProcessor.GRID_DIMENSIONS = Pair(7,3)
         solver = DisplayProcessor(inputDataReader)
+        solver.initialize()
     }
 
     @Test

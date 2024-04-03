@@ -19,6 +19,7 @@ class Day10Test {
         solver = MicrochipFactory(inputDataReader)
         MicrochipFactory.debug = true
         MicrochipFactory.resultChips = listOf(2,5)
+        solver.initialize()
     }
 
     @Test

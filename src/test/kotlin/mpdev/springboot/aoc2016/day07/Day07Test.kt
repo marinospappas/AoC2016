@@ -22,6 +22,7 @@ class Day07Test {
     @BeforeEach
     fun setup() {
         solver = IPv7(inputDataReader)
+        solver.initialize()
     }
 
     @Test
@@ -65,6 +66,7 @@ class Day07Test {
         )
         val expected = listOf(true, false, true, true, true)
         solver = IPv7(inputDataReader)
+        solver.initialize()
         solver.addresses.indices.forEach { i ->
             val addr = solver.addresses[i]
             val abaList = addr.name.map { s -> s.getAbaList() }.flatten().also { it.println() }
@@ -85,6 +87,7 @@ class Day07Test {
             "zazbz[bzx]cdb[uybzbd]grtry"
         )
         solver = IPv7(inputDataReader)
+        solver.initialize()
         val result = solver.solvePart2().also { it.println() }
         assertThat(result).isEqualTo(4)
     }

@@ -18,6 +18,7 @@ class Day11Test {
     @BeforeEach
     fun setup() {
         solver = RITestingFacility(inputDataReader)
+        solver.initialize()
         MicrochipFactory.debug = true
         MicrochipFactory.resultChips = listOf(2,5)
     }

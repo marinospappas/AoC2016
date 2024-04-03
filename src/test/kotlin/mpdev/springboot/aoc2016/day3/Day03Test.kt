@@ -20,6 +20,7 @@ class Day03Test {
     @BeforeEach
     fun setup() {
         solver = TriangleSolver(inputDataReader)
+        solver.initialize()
     }
 
     @Test
@@ -61,6 +62,7 @@ class Day03Test {
             "203 403 603"
         )
         solver = TriangleSolver(inputDataReader)
+        solver.initialize()
         val result = solver.solvePart2().also { it.println() }
         assertThat(result).isEqualTo(6)
     }

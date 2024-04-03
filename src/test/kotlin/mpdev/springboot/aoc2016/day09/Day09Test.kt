@@ -20,6 +20,7 @@ class Day09Test {
     @BeforeEach
     fun setup() {
         solver = PatternDecompressor(inputDataReader)
+        solver.initialize()
     }
 
     @Test

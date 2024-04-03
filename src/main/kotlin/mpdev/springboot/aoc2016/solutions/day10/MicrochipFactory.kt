@@ -37,16 +37,16 @@ class MicrochipFactory(inputDataReader: InputDataReader): PuzzleSolver(inputData
             // send
             robotsToProcess.forEach { bot ->
                 val lowChip = bot.chips.min()
-                val hichChip = bot.chips.max()
+                val highChip = bot.chips.max()
                 bot.chips.clear()
                 if (bot.outputLow.first == Destination.Bot)
                     processingQ.add(Pair(lowChip, bot.outputLow.second))
                 else
                     output.getOrPut(bot.outputLow.second) { mutableListOf() }.add(lowChip)
                 if (bot.outputHigh.first == Destination.Bot)
-                    processingQ.add(Pair(hichChip, bot.outputHigh.second))
+                    processingQ.add(Pair(highChip, bot.outputHigh.second))
                 else
-                    output.getOrPut(bot.outputHigh.second) { mutableListOf() }.add(hichChip)
+                    output.getOrPut(bot.outputHigh.second) { mutableListOf() }.add(highChip)
             }
             if (debug) processingQ.println()
             // receive

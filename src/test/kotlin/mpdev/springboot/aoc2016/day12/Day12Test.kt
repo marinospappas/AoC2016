@@ -1,22 +1,22 @@
-package mpdev.springboot.aoc2016.day06
+package mpdev.springboot.aoc2016.day12
 
 import mpdev.springboot.aoc2016.input.InputDataReader
-import mpdev.springboot.aoc2016.solutions.day06.SignalCorrection
+import mpdev.springboot.aoc2016.solutions.day12.NewComputer
 import mpdev.springboot.aoc2016.utils.println
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 
-class Day06Test {
+class Day12Test {
 
-    private val day = 6                                     ///////// Update this for a new dayN test
-    private lateinit var solver: SignalCorrection           ///////// Update this for a new dayN test
+    private val day = 12                                     ///////// Update this for a new dayN test
+    private lateinit var solver: NewComputer                 ///////// Update this for a new dayN test
     private val inputDataReader = InputDataReader("src/test/resources/inputdata/input")
 
     @BeforeEach
     fun setup() {
-        solver = SignalCorrection(inputDataReader)
+        solver = NewComputer(inputDataReader)
         solver.initialize()
     }
 
@@ -27,16 +27,24 @@ class Day06Test {
     }
 
     @Test
+    @Order(2)
+    fun `Reads Input`() {
+        solver.program.instructionList.forEach { it.println() }
+        assertThat(solver.program.instructionList.size).isEqualTo(6)
+    }
+
+    @Test
     @Order(4)
     fun `Solves Part 1`() {
         val result = solver.solvePart1().also { it.println() }
-        assertThat(result).isEqualTo("easter")
+        assertThat(result).isEqualTo(42)
     }
 
     @Test
     @Order(6)
     fun `Solves Part 2`() {
         val result = solver.solvePart2().also { it.println() }
-        assertThat(result).isEqualTo("advent")
+        assertThat(result).isEqualTo(42)
     }
 }
+

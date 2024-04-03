@@ -19,6 +19,7 @@ class Day04Test {
     @BeforeEach
     fun setup() {
         solver = RoomValidator(inputDataReader)
+        solver.initialize()
     }
 
     @Test

@@ -17,6 +17,7 @@ class Day05Test {
     @BeforeEach
     fun setup() {
         solver = PasswordDecoder(inputDataReader)
+        solver.initialize()
     }
 
     @Test

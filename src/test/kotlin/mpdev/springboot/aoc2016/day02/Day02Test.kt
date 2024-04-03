@@ -18,6 +18,7 @@ class Day02Test {
     @BeforeEach
     fun setup() {
         solver = KeypadDecoder(inputDataReader)
+        solver.initialize()
     }
 
     @Test
