@@ -36,11 +36,6 @@ class Program(prog: List<String>) {
             registers.getOrPut(s) { 0 }
         else
             throw AocException("unexpected error 021")
-    //private fun valueOf(s: String) =
-    //    try {
-    //        s.toInt()
-    //    }
-    //    catch (e: Exception) { registers.getOrPut(s) { 0 } }
 
     private fun String.toIntOrString() =
         try {
