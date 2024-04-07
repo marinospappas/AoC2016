@@ -12,5 +12,18 @@ class Md5 {
         return md5.digest(s.toByteArray())
     }
 
-    fun toString(md5sum: ByteArray): String = md5sum.map { String.format("%02x", it) }.joinToString("")
+    fun checksum(ba: ByteArray): ByteArray {
+        md5.reset()
+        return md5.digest(ba)
+    }
+}
+
+fun ByteArray.toHexString(): String{
+    val hexChars = "0123456789abcdef".toCharArray()
+    var s = ""
+    forEach {
+        val byte = it.toInt()
+        s += "${hexChars[byte ushr 4 and 0x0F]}${hexChars[byte and 0x0F]}"
+    }
+    return s
 }

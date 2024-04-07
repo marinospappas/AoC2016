@@ -44,7 +44,7 @@ class Day14Test {
     @Order(6)
     fun `Solves Part 2`() {
         val result = solver.solvePart2().also { it.println() }
-        assertThat(result).isEqualTo(42)
+        assertThat(result).isEqualTo(22551)
     }
 }
 
