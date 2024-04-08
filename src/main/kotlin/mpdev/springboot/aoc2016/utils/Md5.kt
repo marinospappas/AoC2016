@@ -8,13 +8,8 @@ class Md5 {
     private val md5: MessageDigest = MessageDigest.getInstance("MD5")
 
     fun checksum(s: String): ByteArray {
-        md5.reset()
-        return md5.digest(s.toByteArray())
-    }
-
-    fun checksum(ba: ByteArray): ByteArray {
-        md5.reset()
-        return md5.digest(ba)
+        md5.update(s.toByteArray())
+        return md5.digest()
     }
 }
 

@@ -19,28 +19,25 @@ class KeyGenerator(inputDataReader: InputDataReader): PuzzleSolver(inputDataRead
 
     fun generateKeys( part1or2: Int = 1) {
         md5Cache.clear()
-        keys = generateSequence(0, Int::inc).filter { isValidKey(it, part1or2) }.take(64).toList()
+        keys = generateSequence(0, Int::inc)
+            .filter { isValidKey(it, if (part1or2 == 1) { s -> md5.checksum(s).toHexString() } else { s -> stretchedHash(s) }) }
+            .take(64).toList()
     }
 
-    fun isValidKey(index: Int, part1or2: Int): Boolean {
-        val md5Str = getMd5String(salt, index, part1or2)
+    fun isValidKey(index: Int,  runMd5: (String) -> String): Boolean {
+        val md5Str = getMd5String(salt, index, runMd5)
         var repeatChar: Char
         if (md5Str.containsRepeat3().also { repeatChar = it } != NULL) {
             for (i in index + 1..index + 1000)
-                if (getMd5String(salt, i, part1or2).contains(repeatChar.toString().repeat(5)))
+                if (getMd5String(salt, i, runMd5).contains(repeatChar.toString().repeat(5)))
                     return true
         }
         return false
     }
 
-    val md5Cache: MutableMap<Int,String> = HashMap(5000)
+    val md5Cache: MutableMap<Int,String> = HashMap(30000)
 
-    fun getMd5String(salt: String, index: Int, part1or2: Int): String = md5Cache.getOrPut(index) {
-            if (part1or2 == 1)
-                md5.checksum("$salt$index").toHexString()
-            else
-                stretchedHash("$salt$index")
-    }
+    fun getMd5String(salt: String, index: Int, runMd5: (String) -> String): String = md5Cache.getOrPut(index) { runMd5("$salt$index") }
 
     fun stretchedHash(s: String): String {
         var hash = s
