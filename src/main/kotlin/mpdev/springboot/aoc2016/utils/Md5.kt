@@ -3,7 +3,7 @@ package mpdev.springboot.aoc2016.utils
 import java.security.MessageDigest
 
 
-class Md5 {
+object Md5 {
 
     private val md5: MessageDigest = MessageDigest.getInstance("MD5")
 

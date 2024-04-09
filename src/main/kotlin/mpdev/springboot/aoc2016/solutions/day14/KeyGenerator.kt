@@ -11,7 +11,6 @@ class KeyGenerator(inputDataReader: InputDataReader): PuzzleSolver(inputDataRead
 
     lateinit var salt: String
     var keys: List<Int> = listOf()
-    val md5 = Md5()
 
     override fun initialize() {
         salt = inputData[0]
@@ -20,7 +19,7 @@ class KeyGenerator(inputDataReader: InputDataReader): PuzzleSolver(inputDataRead
     fun generateKeys( part1or2: Int = 1) {
         md5Cache.clear()
         keys = generateSequence(0, Int::inc)
-            .filter { isValidKey(it, if (part1or2 == 1) { s -> md5.checksum(s).toHexString() } else { s -> stretchedHash(s) }) }
+            .filter { isValidKey(it, if (part1or2 == 1) { s -> Md5.checksum(s).toHexString() } else { s -> stretchedHash(s) }) }
             .take(64).toList()
     }
 
@@ -42,13 +41,13 @@ class KeyGenerator(inputDataReader: InputDataReader): PuzzleSolver(inputDataRead
     fun stretchedHash(s: String): String {
         var hash = s
         for (i in 0..2016)
-            hash = md5.checksum(hash).toHexString()
+            hash = Md5.checksum(hash).toHexString()
         return hash
     }
 
     fun String.containsRepeat3(): Char {
-        for (i in this.indices)
-            if (i < length-2 && this[i+1] == this[i] && this[i+2] == this[i])
+        for (i in 0 .. this.lastIndex - 2)
+            if (this[i+1] == this[i] && this[i+2] == this[i])
                 return this[i]
         return NULL
     }

@@ -10,11 +10,10 @@ import kotlin.experimental.and
 class PasswordDecoder(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 5) {
 
     var startId = inputData[0]
-    val md5 = Md5()
 
     override fun solvePart1(): String {
         return generateSequence(0) { it + 1 }
-            .map { md5.checksum("$startId$it") }
+            .map { Md5.checksum("$startId$it") }
             .filter { it[0] == byte0 && it[1] == byte0 && (it[2] and 0xf0.toByte()) == byte0 }
             .map { String.format("%x", it[2] and 0x0f.toByte()) }
             .take(8)
@@ -23,7 +22,7 @@ class PasswordDecoder(inputDataReader: InputDataReader): PuzzleSolver(inputDataR
 
     override fun solvePart2(): String {
         return generateSequence(0) { it + 1 }
-            .map { md5.checksum("$startId$it") }
+            .map { Md5.checksum("$startId$it") }
             .filter { it[0] == byte0 && it[1] == byte0 && (it[2] and 0xf0.toByte()) == byte0 && (it[2] and 0x0f.toByte()) <= 7.toByte() }
             .map { Pair(it[2].toInt() and 0x0f, String.format("%x", (it[3].toInt() and 0xf0) shr 4).first()) }
             .distinctBy { it.first }
