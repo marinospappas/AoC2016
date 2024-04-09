@@ -34,7 +34,7 @@ class KeyGenerator(inputDataReader: InputDataReader): PuzzleSolver(inputDataRead
         return false
     }
 
-    val md5Cache: MutableMap<Int,String> = HashMap(30000)
+    val md5Cache: MutableMap<Int,String> = mutableMapOf()
 
     fun getMd5String(salt: String, index: Int, runMd5: (String) -> String): String = md5Cache.getOrPut(index) { runMd5("$salt$index") }
 
