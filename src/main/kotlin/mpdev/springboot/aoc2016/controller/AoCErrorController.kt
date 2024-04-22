@@ -14,6 +14,6 @@ class AoCErrorController : ErrorController {
     @RequestMapping("/error", produces = ["application/json"])
     fun handleError(): String {
         log.error("invalid url called")
-        return  """{ "Message" : "Error: page not implemented" }"""
+        return  """{ "Message" : "Error: page not implemented or solution crashed" }"""
     }
 }
