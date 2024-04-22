@@ -57,7 +57,7 @@ class Day11Test {
         println("heuristic")
         solver.endState.heuristic().println()
         println("* Start *")
-        val newStateIndex = listOf(0,1,4,0,0,0,0,0,0,0,0)
+        val newStateIndex = listOf(0,1,4,0,0,0,1,0,0,1,0)
         var curState = solver.startState
         for (i in 0..10) {
             println("ROUND $i\nneighbours")
@@ -69,6 +69,7 @@ class Day11Test {
             println("new state")
             curState.println()
         }
+        assertThat(curState).isEqualTo(solver.endState)
     }
 
     @Test

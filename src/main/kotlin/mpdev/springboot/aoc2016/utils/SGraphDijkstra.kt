@@ -44,7 +44,7 @@ inline fun <reified T> SGraph<T>.dijkstra(from: T, isAtEnd: (T) -> Boolean):  Mi
             }
         }
     }
-    dijkstraCost.pathMap.forEach { it.println() }
+    //dijkstraCost.pathMap.forEach { it.println() }
     throw SGraphException("no path found from $from to endState")
 }
 

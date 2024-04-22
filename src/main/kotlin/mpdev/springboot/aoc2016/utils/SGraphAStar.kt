@@ -47,6 +47,6 @@ inline fun <reified T> SGraph<T>.aStar(from: T, isAtEnd: (T) -> Boolean):  MinCo
             }
         }
     }
-    astarCost.pathMap.forEach { it.println() }
+    //astarCost.pathMap.forEach { it.println() }
     throw SGraphException("no path found from $from to endState")
 }

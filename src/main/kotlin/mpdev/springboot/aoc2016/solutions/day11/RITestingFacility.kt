@@ -84,20 +84,10 @@ data class RIState(val state: Triple<List<Int>, List<Int>, Int>) {
     }
 
     fun getNeighbourStates(): List<RIState> {
-        val newStates = mutableListOf<RIState>()
-        for (state in getNeighbours())
-            if (!previousStates.contains(state)) {
-                previousStates.add(state)
-                newStates.add(state)
-            }
-        return newStates
-    }
-
-    private fun getNeighbours(): Set<RIState> {
         val currentLevel = state.third
         val generatorsThisLevel = state.first[currentLevel]
         val microChipsThisLevel = state.second[currentLevel]
-        val neighbours: MutableSet<RIState> = mutableSetOf()
+        val neighbours: MutableList<RIState> = mutableListOf()
         val upLevel = if (state.third == 3) -1 else currentLevel + 1
         val downLevel = if (state.third == 0) -1 else currentLevel - 1
         // see what can move up
@@ -112,30 +102,31 @@ data class RIState(val state: Triple<List<Int>, List<Int>, Int>) {
     }
 
     private fun getMoveUpSet(currentLevel: Int, upLevel: Int, generatorsThisLevel: Int, microChipsThisLevel: Int,
-                             neighbours: MutableSet<RIState>) {
+                             neighbours: MutableList<RIState>) {
         // generators
         var generatorsUp = 0
-        val generatorsSet = mutableSetOf<Int>()
-        for (i in RITestingFacility.elementIndexes)
-            if (generatorsThisLevel.and(i) != 0)
-                generatorsSet.add(i)
-        outerLoop@ for (g1 in generatorsSet)
-            for (g2 in (generatorsSet - g1))
-                if (canMoveGenerator(g1 + g2, currentLevel, upLevel)) {
-                    generatorsUp = g1 + g2
-                    break@outerLoop
+        outerLoop@ for (g1 in RITestingFacility.elementIndexes) {
+            if (generatorsThisLevel.and(g1) != 0) {
+                for (g2 in RITestingFacility.elementIndexes) {
+                    if (generatorsThisLevel.and(g2) != 0 && g2 != g1 && canMoveGenerator(g1 + g2, currentLevel, upLevel)) {
+                        generatorsUp = g1 + g2
+                        break@outerLoop
+
+                    }
                 }
+            }
+        }
         // if 2 generators can move up we don't move just one, else we find one that can move up
         if (generatorsUp == 0) {
-            for (g in (generatorsSet))
-                if (canMoveGenerator(g, currentLevel, upLevel)) {
+            for (g in RITestingFacility.elementIndexes)
+                if (generatorsThisLevel.and(g) != 0 && canMoveGenerator(g, currentLevel, upLevel)) {
                     generatorsUp =g
                     break
                 }
         }
         if (generatorsUp != 0) {
             val newGenerators = state.first.toMutableList().also { it[currentLevel] -= generatorsUp }.also { it[upLevel] += generatorsUp }
-            neighbours.add(RIState(Triple(newGenerators, state.second, upLevel)))
+            addState(neighbours, RIState(Triple(newGenerators, state.second, upLevel)))
         }
 
         // microchips
@@ -150,21 +141,21 @@ data class RIState(val state: Triple<List<Int>, List<Int>, Int>) {
         if (microchipsUp > 0) {
             val newMicrochips = state.second.toMutableList().also { it[currentLevel] -= microchipsUp }
                 .also { it[upLevel] += microchipsUp }
-            neighbours.add(RIState(Triple(state.first, newMicrochips, upLevel)))
+            addState(neighbours, RIState(Triple(state.first, newMicrochips, upLevel)))
         }
 
         // generator + microchip pair
-        for (g in (generatorsSet))
-            if (microChipsThisLevel.and(g) != 0 && areAllMicroChipsSafe(state.second[upLevel], state.first[upLevel] + g)) {
+        for (g in (RITestingFacility.elementIndexes))
+            if (generatorsThisLevel.and(g) != 0 && microChipsThisLevel.and(g) != 0 && areAllMicroChipsSafe(state.second[upLevel], state.first[upLevel] + g)) {
                 val newGenerators = state.first.toMutableList().also { it[currentLevel] -= g }.also { it[upLevel] += g }
                 val newMicrochips = state.second.toMutableList().also { it[currentLevel] -= g }.also { it[upLevel] += g }
-                neighbours.add(RIState(Triple(newGenerators, newMicrochips, upLevel)))
+                addState(neighbours, RIState(Triple(newGenerators, newMicrochips, upLevel)))
                 break
             }
     }
 
     private fun getMoveDownSet(currentLevel: Int, downLevel: Int, generatorsThisLevel: Int, microChipsThisLevel: Int,
-                             neighbours: MutableSet<RIState>) {
+                             neighbours: MutableList<RIState>) {
         // generators
         var generatorsDown = 0
         val generatorsSet = mutableSetOf<Int>()
@@ -187,7 +178,7 @@ data class RIState(val state: Triple<List<Int>, List<Int>, Int>) {
         }
         if (generatorsDown != 0) {
             val newGenerators = state.first.toMutableList().also { it[currentLevel] -= generatorsDown }.also { it[downLevel] += generatorsDown }
-            neighbours.add(RIState(Triple(newGenerators, state.second, downLevel)))
+            addState(neighbours, RIState(Triple(newGenerators, state.second, downLevel)))
         }
 
         // microchips
@@ -200,7 +191,7 @@ data class RIState(val state: Triple<List<Int>, List<Int>, Int>) {
             val microChipDown = microchipsSet.first()
             val newMicrochips = state.second.toMutableList().also { it[currentLevel] -= microChipDown }
                 .also { it[downLevel] += microChipDown }
-            neighbours.add(RIState(Triple(state.first, newMicrochips, downLevel)))
+            addState(neighbours, RIState(Triple(state.first, newMicrochips, downLevel)))
         }
 
         // generator + microchip pair
@@ -208,9 +199,16 @@ data class RIState(val state: Triple<List<Int>, List<Int>, Int>) {
             if (microChipsThisLevel.and(g) != 0 && areAllMicroChipsSafe(state.second[downLevel], state.first[downLevel] + g)) {
                 val newGenerators = state.first.toMutableList().also { it[currentLevel] -= g }.also { it[downLevel] += g }
                 val newMicrochips = state.second.toMutableList().also { it[currentLevel] -= g }.also { it[downLevel] += g }
-                neighbours.add(RIState(Triple(newGenerators, newMicrochips, downLevel)))
+                addState(neighbours, RIState(Triple(newGenerators, newMicrochips, downLevel)))
                 break
             }
+    }
+
+    private fun addState(newStates: MutableList<RIState>, state: RIState) {
+        if (!previousStates.contains(state)) {
+            previousStates.add(state)
+            newStates.add(state)
+        }
     }
 
     private fun canMoveGenerator(generators: Int, from: Int, to: Int): Boolean {
