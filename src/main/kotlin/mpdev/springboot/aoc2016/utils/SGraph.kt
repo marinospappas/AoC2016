@@ -56,6 +56,14 @@ class SGraph<T>(var nodes: MutableMap<T, MutableMap<T, Int>> = mutableMapOf(),
         return dfsMaxPath(start, end, mutableMapOf()) ?: -1
     }
 
+    fun print() {
+        var count = 1
+        println("SGraph")
+        nodes.forEach { (k, v) ->
+            println("node ${count++}: $k connected to: $v")
+        }
+    }
+
     //TODO: refactor the below function to use Stack instead of recursion
     private fun dfsMaxPath(cur: T, end: T, visited: MutableMap<T, Int>): Int? {
         if (cur == end) {

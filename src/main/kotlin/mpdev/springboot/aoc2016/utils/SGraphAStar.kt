@@ -11,7 +11,7 @@ inline fun <reified T> SGraph<T>.aStar(from: T, isAtEnd: (T) -> Boolean):  MinCo
     val astarCost = SGraphPathMap<T>()
     var currentNode: SGraphPathNode<T>
 
-    SGraph.aStarAlgorithm = true   // ensure dijkstra is used
+    SGraph.aStarAlgorithm = true   // ensure A* is used
     var iterations = 0
     // while the priority Q has elements, get the top one (least cost as per Comparator)
     while (priorityQueue.isNotEmpty()) {
