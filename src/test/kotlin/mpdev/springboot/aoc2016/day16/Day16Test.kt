@@ -41,10 +41,18 @@ class Day16Test {
     }
 
     @Test
+    @Order(3)
+    fun `Calculates Dragon Checksum`() {
+        val data = solver.dragonCurve("10000", 20).also { it.println() }
+        val chksum = solver.dragonChecksum(data).also { it.println() }
+        assertThat(chksum).isEqualTo("01100")
+    }
+
+    @Test
     @Order(4)
     fun `Solves Part 1`() {
         val result = solver.solvePart1().also { it.println() }
-        assertThat(result).isEqualTo(5)
+        assertThat(result).isEqualTo("01100")
     }
 
     @Test
