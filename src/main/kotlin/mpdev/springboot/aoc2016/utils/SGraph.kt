@@ -45,15 +45,11 @@ class SGraph<T>(var nodes: MutableMap<T, MutableMap<T, Int>> = mutableMapOf(),
         removeConnection(setOf(a, b))
     }
 
-    fun getCost(a:T, b:T) = nodes[a]?.get(b)!!
+    fun getCost(a:T, b:T) = nodes[a]?.get(b) ?: throw SGraphException("cannot find the cost from [$a] to [$b]")
 
     fun removeConnection(edge: Set<T>) {
         nodes[edge.first()]?.remove(edge.last())
         nodes[edge.last()]?.remove(edge.first())
-    }
-
-    fun longestPathDfs(start: T, end: T): Int {
-        return dfsMaxPath(start, end, mutableMapOf()) ?: -1
     }
 
     fun print() {
@@ -62,6 +58,10 @@ class SGraph<T>(var nodes: MutableMap<T, MutableMap<T, Int>> = mutableMapOf(),
         nodes.forEach { (k, v) ->
             println("node ${count++}: $k connected to: $v")
         }
+    }
+
+    fun longestPathDfs(start: T, end: T): Int {
+        return dfsMaxPath(start, end, mutableMapOf()) ?: -1
     }
 
     //TODO: refactor the below function to use Stack instead of recursion
@@ -82,6 +82,8 @@ class SGraph<T>(var nodes: MutableMap<T, MutableMap<T, Int>> = mutableMapOf(),
         }
         return maxPath
     }
+
+
 
     companion object {
         var aStarAlgorithm = false      // flag used to distinguish between A* and Dijkstra algorithm for min cost path

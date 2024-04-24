@@ -11,7 +11,7 @@ class Maze(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 13) 
     val debug = false
     val inputNumber = inputData[0].toInt()
     lateinit var grid: Grid<Pixel>
-    var graph = SGraph<Point>()
+    val graph = SGraph<Point>()
     var minX = 0
     var minY = 0
     var maxX = 0
@@ -25,7 +25,6 @@ class Maze(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 13) 
         grid = Grid(gridData, Pixel.mapper, border = 0)
         maxX = grid.getMinMaxXY().x2
         maxY = grid.getMinMaxXY().x4
-        graph = SGraph()
         for (x in minX .. maxX)
             for (y in minY .. maxY)
                 if (grid.getDataPoint(Point(x,y)) == Pixel.PATH)
