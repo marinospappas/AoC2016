@@ -9,9 +9,10 @@ import kotlin.math.min
 class DragonChecksum(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 16) {
 
     fun dragonCurve(input: String, length: Int): String {
-        var a = input
+        val a = StringBuilder(input)
         do {
-            a = "${a}0${a.reversed().flipBits()}"
+            val b = a.reversed().toString().replace('0','x').replace('1','0').replace('x','1')
+            a.append('0').append(b)
         } while (a.length < length)
         return a.substring(0, length)
     }
@@ -42,7 +43,4 @@ class DragonChecksum(inputDataReader: InputDataReader): PuzzleSolver(inputDataRe
         log.info("data part 2: {}...", data.substring(0, 100))
         return dragonChecksum(data)
     }
-
-    fun String.flipBits() = this.toCharArray().map { c -> if (c == '1') '0' else if (c == '0') '1' else c }
-        .joinToString("")
 }
