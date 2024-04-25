@@ -37,7 +37,7 @@ class Day16Test {
     ])
     @Order(2)
     fun `Calculates Dragon Curve`(a: String, expected: String) {
-        assertThat(solver.dragonPattern(a)).isEqualTo(expected)
+        assertThat(solver.dragonCurve(a, 2 * a.length + 1)).isEqualTo(expected)
     }
 
     @Test

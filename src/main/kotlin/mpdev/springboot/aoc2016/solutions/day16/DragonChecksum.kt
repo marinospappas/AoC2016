@@ -9,14 +9,12 @@ import kotlin.math.min
 class DragonChecksum(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 16) {
 
     fun dragonCurve(input: String, length: Int): String {
-        var out = input
+        var a = input
         do {
-            out = dragonPattern(out)
-        } while (out.length < length)
-        return out.substring(0, length)
+            a = "${a}0${a.reversed().flipBits()}"
+        } while (a.length < length)
+        return a.substring(0, length)
     }
-
-    fun dragonPattern(a: String): String = "${a}0${a.reversed().flipBits()}"
 
     fun checkSum(a: String): String {
         val sb = StringBuilder()

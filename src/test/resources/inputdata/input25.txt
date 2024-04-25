@@ -1,0 +1,49 @@
+#TEST
+
+#Part 1
+          cpy a d
+          cpy 4 c
+
+L003:     cpy 633 b
+L001:     inc d
+          dec b
+          jnz b -2   L001
+          dec c
+          jnz c -5   L003
+
+L011:     cpy d a   # a = 2532 + a
+##### end of part 1
+
+#Part 2
+L002:     jnz 0 0
+          cpy a b
+          cpy 0 a
+
+L007:     cpy 2 c
+
+L006:     jnz b 2   L004
+          jnz 1 6   L005
+L004:     dec b
+          dec c
+          jnz c -4  L006
+
+          inc a
+          jnz 1 -7  L007
+##### end of part 2
+
+#Part 3
+L005:     cpy 2 b
+
+L010:     jnz c 2   L008
+          jnz 1 4   L009
+L008:     dec b
+          dec c
+          jnz 1 -4  L010
+
+
+L009:     jnz 0 0
+          out b
+##### end of prat 3
+
+          jnz a -19   L002
+          jnz 1 -21   L011

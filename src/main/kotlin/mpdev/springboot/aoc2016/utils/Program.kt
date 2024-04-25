@@ -1,17 +1,20 @@
-package mpdev.springboot.aoc2016.solutions.day12
+package mpdev.springboot.aoc2016.utils
 
-import mpdev.springboot.aoc2016.solutions.day12.Instruction.*
-import mpdev.springboot.aoc2016.utils.AocException
+import kotlinx.coroutines.channels.Channel
+import mpdev.springboot.aoc2016.utils.Instruction.*
 
-class Program(prog: List<String>) {
+class Program(prog: List<String>, private val outputChannel: Channel<Int> = Channel()) {
 
-    val instructionList: List< Triple<Instruction, Any, Any> >  =
+    val instructionList: List< Triple<Instruction, Any, Any> >  = if (prog[0].equals("#test", true))
+        emptyList()
+    else
         prog.map { it.split(" ") }.map { it + "" }
             .map { Triple(Instruction.fromString(it[0]), it[1].toIntOrString(), it[2].toIntOrString()) }
     private val registers = mutableMapOf<String,Int>()
 
-    fun run(initReg: Map<String,Int> = emptyMap()) {
+    suspend fun run(initReg: Map<String,Int> = emptyMap(), maxCount: Int = Int.MAX_VALUE) {
         var pc = 0
+        var outputCount = 0
         registers.clear()
         initReg.forEach { (reg, v) -> registers[reg] = v }
         while (pc <= instructionList.lastIndex) {
@@ -21,8 +24,11 @@ class Program(prog: List<String>) {
                 INC -> registers[reg.toString()] = registers.getOrPut(reg.toString()) { 0 } + 1
                 DEC -> registers[reg.toString()] = registers.getOrPut(reg.toString()) { 0 } - 1
                 JNZ -> if (valueOf(reg) != 0) pc += valueOf(param) - 1
+                OUT -> { outputChannel.send(valueOf(reg)); ++outputCount }
             }
             ++pc
+            if (outputCount >= maxCount)
+                return
         }
     }
 
@@ -48,7 +54,8 @@ enum class Instruction(val value: String) {
     CPY("cpy"),
     INC("inc"),
     DEC("dec"),
-    JNZ("jnz");
+    JNZ("jnz"),
+    OUT("out");
     companion object {
         fun fromString(str: String): Instruction {
             return Instruction.values().firstOrNull { it.value == str } ?: throw AocException("no operation found for [$str]")
