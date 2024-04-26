@@ -58,7 +58,7 @@ class NewComputer25(inputDataReader: InputDataReader): PuzzleSolver(inputDataRea
                 }
             }
             if (solved) {
-                log.info("program output: {}", result.joinToString(""))
+                log.info("program output: {}...", result.joinToString(""))
                 return a
             }
         }
