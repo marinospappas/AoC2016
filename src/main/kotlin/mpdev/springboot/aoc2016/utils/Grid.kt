@@ -102,6 +102,15 @@ open class Grid<T>(inputGridVisual: List<String> = emptyList(),
         updateXYDimensions(border)
     }
 
+    fun getRowAsList(n: Int): List<T> = data.filter { e -> e.key.y == n }.map { e -> e.value }
+
+    fun getColAsList(n: Int): List<T> = data.filter { e -> e.key.x == n }.map { e -> e.value }
+
+    fun setRowFromList(n: Int, rowData: List<T>) {
+        for (x in rowData.indices)
+            data[Point(minX + x, n)] = rowData[x]
+    }
+
     // mapping of a column or a row to int by interpreting the co-ordinates as bit positions
     fun mapRowToInt(n: Int, predicate: (T) -> Boolean = { true }) =
         data.filter { e -> predicate(e.value) && e.key.y == n }.map { e -> bitToInt[e.key.x] }
