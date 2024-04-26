@@ -31,6 +31,14 @@ class NewComputer23(inputDataReader: InputDataReader): PuzzleSolver(inputDataRea
         return result
     }
 
-    override fun solvePart2(): String = "End of AoC 2016"
+    override fun solvePart2(): Int {
+        var result: Int
+        log.info("Part 2")
+        program = Program(inputData)
+        runBlocking {
+           result = runProgram(mapOf("a" to 12))
+        }
+        return result
+    }
 
 }

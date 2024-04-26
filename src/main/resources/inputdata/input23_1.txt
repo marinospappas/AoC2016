@@ -1,13 +1,13 @@
 cpy a b
 dec b
-mul a b
-nop
-nop
-nop
-nop
-nop
-nop
-nop
+cpy a d
+cpy 0 a
+cpy b c
+inc a
+dec c
+jnz c -2
+dec d
+jnz d -5
 dec b
 cpy b c
 cpy c d

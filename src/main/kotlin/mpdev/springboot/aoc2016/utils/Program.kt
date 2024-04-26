@@ -9,7 +9,7 @@ class Program(prog: List<String>, private val outputChannel: Channel<Int> = Chan
     val instructionList: MutableList< Triple<Instruction, Any, Any> >  = if (prog[0].equals("#test", true))
         mutableListOf()
     else
-        prog.map { it.split(" ") }.map { it + "" }
+        prog.map { it.split(" ") }.map { it + ""  + ""}
             .map { Triple(Instruction.fromString(it[0]), it[1].toIntOrString(), it[2].toIntOrString()) }
             .toMutableList()
     private val registers = mutableMapOf<String,Int>()
@@ -25,11 +25,12 @@ class Program(prog: List<String>, private val outputChannel: Channel<Int> = Chan
                 CPY -> if (param is String) registers[param] = valueOf(reg)  // reg and param are reversed in cpy instruction
                 INC -> registers[reg.toString()] = registers.getOrPut(reg.toString()) { 0 } + 1
                 DEC -> registers[reg.toString()] = registers.getOrPut(reg.toString()) { 0 } - 1
-                MUL -> {}  // TODO
+                MUL -> registers[reg.toString()] = valueOf(reg) * valueOf(param)
                 JNZ -> if (valueOf(reg) != 0) pc += valueOf(param) - 1
                 TGL -> if (pc + valueOf(reg) < instructionList.size) {
                     val curInstr = instructionList[pc + valueOf(reg)]
                     instructionList[pc + valueOf(reg)] = Triple(toggle(curInstr.first), curInstr.second, curInstr.third)
+                    println("TGL: intr $curInstr was changed to ${instructionList[pc + valueOf(reg)]}")
                 }
                 OUT -> { outputChannel.send(valueOf(reg)); ++outputCount }
                 NOP -> {}
