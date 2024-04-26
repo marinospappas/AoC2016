@@ -22,15 +22,17 @@ class Program(prog: List<String>, private val outputChannel: Channel<Int> = Chan
         while (pc <= instructionList.lastIndex && outputCount < maxCount) {
             val (instr, reg, param) = instructionList[pc]
             when (instr) {
-                CPY -> registers[param.toString()] = valueOf(reg)  // reg and param are reversed in cpy instruction
+                CPY -> if (param is String) registers[param] = valueOf(reg)  // reg and param are reversed in cpy instruction
                 INC -> registers[reg.toString()] = registers.getOrPut(reg.toString()) { 0 } + 1
                 DEC -> registers[reg.toString()] = registers.getOrPut(reg.toString()) { 0 } - 1
+                MUL -> {}  // TODO
                 JNZ -> if (valueOf(reg) != 0) pc += valueOf(param) - 1
-                TGL -> if (valueOf(reg) < instructionList.size) {
+                TGL -> if (pc + valueOf(reg) < instructionList.size) {
                     val curInstr = instructionList[pc + valueOf(reg)]
                     instructionList[pc + valueOf(reg)] = Triple(toggle(curInstr.first), curInstr.second, curInstr.third)
                 }
                 OUT -> { outputChannel.send(valueOf(reg)); ++outputCount }
+                NOP -> {}
             }
             ++pc
         }
@@ -56,15 +58,19 @@ enum class Instruction(val value: String) {
     CPY("cpy"),
     INC("inc"),
     DEC("dec"),
+    MUL("mul"),
     JNZ("jnz"),
     TGL("tgl"),
-    OUT("out");
+    OUT("out"),
+    NOP("nop");
     companion object {
         fun toggle(instr: Instruction) = when(instr) {
             INC -> DEC
             DEC, TGL, OUT -> INC
             JNZ -> CPY
             CPY -> JNZ
+            MUL -> MUL
+            NOP -> NOP
         }
         fun fromString(str: String): Instruction {
             return Instruction.values().firstOrNull { it.value == str } ?: throw AocException("no operation found for [$str]")

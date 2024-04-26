@@ -26,7 +26,7 @@ class NewComputer23(inputDataReader: InputDataReader): PuzzleSolver(inputDataRea
     override fun solvePart1(): Int {
         var result: Int
         runBlocking {
-            result = runProgram()
+            result = runProgram(mapOf("a" to 7))
         }
         return result
     }
