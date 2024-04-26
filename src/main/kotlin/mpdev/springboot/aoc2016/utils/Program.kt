@@ -30,7 +30,7 @@ class Program(prog: List<String>, private val outputChannel: Channel<Int> = Chan
                 TGL -> if (pc + valueOf(reg) < instructionList.size) {
                     val curInstr = instructionList[pc + valueOf(reg)]
                     instructionList[pc + valueOf(reg)] = Triple(toggle(curInstr.first), curInstr.second, curInstr.third)
-                    println("TGL: intr $curInstr was changed to ${instructionList[pc + valueOf(reg)]}")
+                    println("TGL: instr $curInstr was changed to ${instructionList[pc + valueOf(reg)]}")
                 }
                 OUT -> { outputChannel.send(valueOf(reg)); ++outputCount }
                 NOP -> {}
