@@ -174,7 +174,7 @@ class InputUtils(inputClazz: Class<*>) {
         }
     }
 
-    // convert  field to json format "name": value
+    // convert field to json format "name": value
     private fun fieldToJson(name: String, value: String, type: Class<*>, annotation: AocInField): String {
         var result = ""
         result += """"$name": """

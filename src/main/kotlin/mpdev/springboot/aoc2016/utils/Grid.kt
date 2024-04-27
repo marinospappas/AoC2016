@@ -1,7 +1,7 @@
 package mpdev.springboot.aoc2016.utils
 
 open class Grid<T>(inputGridVisual: List<String> = emptyList(),
-                   private val mapper: Map<Char,T>,
+                   private val mapper: Map<Char,T> = emptyMap(),
                    private val border: Int = 1,
                    private val defaultChar: Char = '.',
                    private val defaultSize: Pair<Int,Int> = Pair(-1,-1)) {
@@ -39,6 +39,18 @@ open class Grid<T>(inputGridVisual: List<String> = emptyList(),
         updateXYDimensions(border)
     }
 
+    constructor(xyList: List<Point>, mapper: Map<Char,T> = emptyMap(), border: Int = 1, defaultChar: Char = '.', defaultSize: Pair<Int,Int> = Pair(-1,-1), function: (Point) -> T):
+            this(mapper = mapper, border = border, defaultChar = defaultChar, defaultSize = defaultSize) {
+        xyList.forEach { p -> data[p] = function(p) }
+        updateXYDimensions(border)
+    }
+
+    constructor(xRange: IntRange, yRange: IntRange, mapper: Map<Char,T> = emptyMap(), border: Int = 1, defaultChar: Char = '.', defaultSize: Pair<Int,Int> = Pair(-1,-1), function: (Int,Int) -> T):
+            this(mapper = mapper, border = border, defaultChar = defaultChar, defaultSize = defaultSize) {
+        xRange.forEach { x -> yRange.forEach { y -> data[Point(x,y)] = function(x, y) } }
+        updateXYDimensions(border)
+    }
+
     private fun updateXYDimensions(border: Int) {
         if (defaultSize.first > 0 && defaultSize.second > 0) {
             minX = 0
@@ -65,6 +77,10 @@ open class Grid<T>(inputGridVisual: List<String> = emptyList(),
     open fun removeDataPoint(p: Point) {
         data.remove(p)
     }
+
+    open fun findFirstOrNull(d: T): Point? = data.filter { it.value == d }.firstNotNullOfOrNull { it.key }
+
+    open fun findFirst(d: T): Point = findFirstOrNull(d) ?: throw AocException("data point not found: [$d]")
 
     open fun getColumn(x: Int): Set<Map.Entry<Point,T>> =
         data.entries.filter { it.key.x == x }.toSet()
@@ -178,7 +194,6 @@ open class Grid<T>(inputGridVisual: List<String> = emptyList(),
             print(i%10)
         println("")
     }
-
 }
 
 data class FourComponents(val x1: Int, val x2: Int, val x3: Int, val x4: Int)

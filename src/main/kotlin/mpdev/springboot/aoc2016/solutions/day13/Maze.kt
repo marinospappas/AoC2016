@@ -1,6 +1,7 @@
 package mpdev.springboot.aoc2016.solutions.day13
 
 import mpdev.springboot.aoc2016.input.InputDataReader
+import mpdev.springboot.aoc2016.solutions.day13.Pixel.*
 import mpdev.springboot.aoc2016.solutions.PuzzleSolver
 import mpdev.springboot.aoc2016.utils.*
 import org.springframework.stereotype.Component
@@ -11,25 +12,20 @@ class Maze(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 13) 
     val debug = false
     val inputNumber = inputData[0].toInt()
     lateinit var grid: Grid<Pixel>
-    val graph = SGraph<Point>()
+    lateinit var  graph: SGraph<Point>
     var minX = 0
     var minY = 0
     var maxX = 0
     var maxY = 0
 
     override fun initialize() {
-        val gridData: MutableMap<Point,Pixel> = mutableMapOf()
-        for (x in 0 .. TARGET.x + TARGET.x / 2)
-            for (y in 0 .. TARGET.y + TARGET.y / 2)
-                gridData[Point(x,y)] = Pixel.fromXy(x, y, inputNumber)
-        grid = Grid(gridData, Pixel.mapper, border = 0)
+        grid = Grid(0 .. TARGET.x + TARGET.x / 2,
+            0 .. TARGET.y + TARGET.y / 2, Pixel.mapper, border = 0) { x, y -> Pixel.fromXy(x, y, inputNumber) }
         maxX = grid.getMinMaxXY().x2
         maxY = grid.getMinMaxXY().x4
-        for (x in minX .. maxX)
-            for (y in minY .. maxY)
-                if (grid.getDataPoint(Point(x,y)) == Pixel.PATH)
-                    graph.addNode(Point(x,y),
-                        Point(x,y).adjacentCardinal().toSet().filter { grid.getDataPoint(it) == Pixel.PATH }.toSet())
+        graph = SGraph(grid.getDataPoints().filter { d -> d.value == PATH }.map {
+                d -> Pair(d.key, d.key.adjacentCardinal().filter { grid.getDataPoint(it) == PATH }.toMutableSet())
+        })
     }
 
     override fun solvePart1(): Int {

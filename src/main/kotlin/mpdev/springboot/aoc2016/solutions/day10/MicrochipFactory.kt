@@ -93,7 +93,7 @@ data class AoCInput(
     @AocInField(0) val recId: String,
     @AocInField(1) val id: Int,
     @AocInField(2) val dest1: String,
-    @AocInField(2) val dest1Id: Int,
-    @AocInField(3) val dest2: String,
-    @AocInField(3) val dest2Id: Int
+    @AocInField(3) val dest1Id: Int,
+    @AocInField(4) val dest2: String,
+    @AocInField(5) val dest2Id: Int
 )
