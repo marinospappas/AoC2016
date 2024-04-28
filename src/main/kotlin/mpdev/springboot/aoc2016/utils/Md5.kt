@@ -13,7 +13,7 @@ object Md5 {
     }
 }
 
-fun ByteArray.toHexString(): String{
+fun ByteArray.toHexString(): String {
     val hexChars = "0123456789abcdef".toCharArray()
     var s = ""
     forEach {

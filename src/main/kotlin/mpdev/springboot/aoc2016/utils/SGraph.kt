@@ -60,20 +60,20 @@ class SGraph<T>(var nodes: MutableMap<T, MutableMap<T, Int>> = mutableMapOf(),
         }
     }
 
-    fun longestPathDfs(start: T, end: T): Int {
-        return dfsMaxPath(start, end, mutableMapOf()) ?: -1
+    fun longestPathDfs(start: T, isAtEnd: (T) -> Boolean): Int {
+        return dfsMaxPath(start, isAtEnd, mutableMapOf()) ?: -1
     }
 
     //TODO: refactor the below function to use Stack instead of recursion
-    private fun dfsMaxPath(cur: T, end: T, visited: MutableMap<T, Int>): Int? {
-        if (cur == end) {
+    private fun dfsMaxPath(cur: T, isAtEnd: (T) -> Boolean, visited: MutableMap<T, Int>): Int? {
+        if (isAtEnd(cur)) {
             return visited.values.sum()
         }
         var maxPath: Int? = null
-        (nodes[cur] ?: emptyMap()).forEach { (neighbor, steps) ->
+        getConnected(cur).forEach { (neighbor, steps) ->
             if (neighbor !in visited) {
                 visited[neighbor] = steps
-                val res = dfsMaxPath(neighbor, end, visited)
+                val res = dfsMaxPath(neighbor, isAtEnd, visited)
                 if (maxPath == null || (res != null && res > maxPath!!)) {
                     maxPath = res
                 }
@@ -82,8 +82,6 @@ class SGraph<T>(var nodes: MutableMap<T, MutableMap<T, Int>> = mutableMapOf(),
         }
         return maxPath
     }
-
-
 
     companion object {
         var aStarAlgorithm = false      // flag used to distinguish between A* and Dijkstra algorithm for min cost path

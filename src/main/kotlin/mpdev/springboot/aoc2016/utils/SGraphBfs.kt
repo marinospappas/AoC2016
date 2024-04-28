@@ -1,15 +1,15 @@
 package mpdev.springboot.aoc2016.utils
 
-inline fun <reified T: Comparable<T>> SGraph<T>.shortestPathBfs(from: T, to: T): List<T> {
+inline fun <reified T> SGraph<T>.shortestPathBfs(from: T, isAtEnd: (T) -> Boolean): List<T> {
     var curPath = mutableListOf(from)
     val visited = mutableSetOf(from)
     val queue = ArrayDeque<MutableList<T>>().also { l -> l.add(curPath) }
     while (queue.isNotEmpty()) {
         curPath = queue.removeFirst()
         val lastNode = curPath.last()
-        if (lastNode == to)   // found path
+        if (isAtEnd(lastNode))   // found path
             return curPath
-        getConnected(lastNode).map { it.first }.sortedBy { it }.forEach { connection ->
+        getConnected(lastNode).map { it.first }.forEach { connection ->
             if (!curPath.contains(connection) && !visited.contains(connection)) {
                 visited.add(connection)
                 val newPartialPath = curPath.toMutableList().also { it.add(connection) }
@@ -20,20 +20,20 @@ inline fun <reified T: Comparable<T>> SGraph<T>.shortestPathBfs(from: T, to: T):
     return emptyList()
 }
 
-inline fun <reified T: Comparable<T>> SGraph<T>.allPaths(from: T, to: T): List<Set<T>> {
-    val allPaths = mutableListOf<Set<T>>()
-    val queue = ArrayDeque<MutableSet<T>>()
-    var curPath = mutableSetOf(from)
+inline fun <reified T> SGraph<T>.allPaths(from: T, isAtEnd: (T) -> Boolean): List<List<T>> {
+    val allPaths = mutableListOf<List<T>>()
+    val queue = ArrayDeque<MutableList<T>>()
+    var curPath = mutableListOf(from)
     queue.add(curPath)
     while (queue.isNotEmpty()) {
         curPath = queue.removeFirst()
         val lastNode = curPath.last()
-        if (lastNode == to)   // found path
+        if (isAtEnd(lastNode))   // found path
             allPaths.add(curPath)
         else
             getConnected(lastNode).map { it.first }.forEach { connectedNode ->
                 if (!curPath.contains(connectedNode)) {
-                    val newPartialPath = curPath.toMutableSet().also { it.add(connectedNode) }
+                    val newPartialPath = curPath.toMutableList().also { it.add(connectedNode) }
                     queue.add(newPartialPath)
                 }
             }

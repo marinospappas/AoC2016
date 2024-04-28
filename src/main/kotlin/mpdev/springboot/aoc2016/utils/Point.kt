@@ -21,6 +21,9 @@ data class Point(var x: Int, var y: Int): Comparable<Point> {
     operator fun minus(other: Point) =
         Point(this.x - other.x, this.y - other.y)
 
+    operator fun div(n: Int) =
+        Point(this.x / n, this.y / n)
+
     fun adjacent(diagonally: Boolean = true): Array<Point> =
         (if (diagonally)
             listOf(
