@@ -3,6 +3,7 @@ package mpdev.springboot.aoc2016.utils
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import mpdev.springboot.aoc2016.utils.ListType.*
+import java.lang.reflect.Method
 
 /**
  * Annotation for the class that will receive the input
@@ -191,7 +192,10 @@ class InputUtils(inputClazz: Class<*>) {
             List::class.java -> toList(value, annotation, 0)
             Pair::class.java -> toPair(value, annotation.delimiters[0])
             Point::class.java -> toPoint(value, annotation.delimiters[0])
-            else -> throw AocException("could not recognize field type [${type.simpleName}]")
+            else -> {
+                if (type.isEnum) toEnum(value, type)
+                else throw AocException("could not recognize field type [${type.simpleName}]")
+            }
         }
     }
 
@@ -216,6 +220,16 @@ class InputUtils(inputClazz: Class<*>) {
     }
     private fun toLong(s: String): String {
         return s.trim().toLong().toString()
+    }
+
+    private fun toEnum(s: String, type: Class<*>): String {
+        try {
+            val f: Method = type.getDeclaredMethod("fromString", String::class.java)
+            return """"${f.invoke(null, s)}""""
+        }
+        catch (e: Exception) {
+            throw AocException(e.stackTraceToString())
+        }
     }
 
     //TODO - check below in case trim is needed in all cases

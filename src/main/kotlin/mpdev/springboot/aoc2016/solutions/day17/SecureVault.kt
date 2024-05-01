@@ -29,7 +29,7 @@ class SecureVault(inputDataReader: InputDataReader): PuzzleSolver(inputDataReade
 
     override fun solvePart1(): String {
         val minPath = graph.shortestPathBfs(State(startPosition,"")) { state -> state.position == endPosition }
-        return pathToString(minPath.map { Pair(it,1) })
+        return pathToString(minPath.map { Pair(it, 1) })
     }
 
     fun pathToString(path: List<Pair<State,Int>>): String {
