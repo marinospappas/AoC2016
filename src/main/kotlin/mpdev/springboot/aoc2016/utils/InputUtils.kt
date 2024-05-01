@@ -176,12 +176,8 @@ class InputUtils(inputClazz: Class<*>) {
     }
 
     // convert field to json format "name": value
-    private fun fieldToJson(name: String, value: String, type: Class<*>, annotation: AocInField): String {
-        var result = ""
-        result += """"$name": """
-        result += getFieldValueForJson(value, type, annotation)
-        return result
-    }
+    private fun fieldToJson(name: String, value: String, type: Class<*>, annotation: AocInField): String =
+        """"$name": """ + getFieldValueForJson(value, type, annotation)
 
     // get the value of a field as json-friendly string
     private fun getFieldValueForJson(value: String, type: Class<*>, annotation: AocInField): String {
@@ -193,7 +189,7 @@ class InputUtils(inputClazz: Class<*>) {
             Pair::class.java -> toPair(value, annotation.delimiters[0])
             Point::class.java -> toPoint(value, annotation.delimiters[0])
             else -> {
-                if (type.isEnum) toEnum(value, type)
+                if (type.isEnum) toEnum(value, type)    // any enum class - must have static method fromString(String)
                 else throw AocException("could not recognize field type [${type.simpleName}]")
             }
         }

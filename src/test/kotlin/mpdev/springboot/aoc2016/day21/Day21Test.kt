@@ -18,7 +18,7 @@ class Day21Test {
     fun setup() {
         solver = ScrambledLetters(inputDataReader)
         solver.initialize()
-        solver.inputString = "abcdefgh"
+        solver.inputString = "abcde"
     }
 
     @Test
@@ -38,7 +38,7 @@ class Day21Test {
     @Order(4)
     fun `Solves Part 1`() {
         val result = solver.solvePart1().also { it.println() }
-        assertThat(result).isEqualTo("")
+        assertThat(result).isEqualTo("decab")
     }
 
     @Test

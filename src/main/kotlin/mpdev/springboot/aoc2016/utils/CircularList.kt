@@ -1,6 +1,6 @@
 package mpdev.springboot.aoc2016.utils
 
-class CircularList<T>(val data: MutableList<T>) {
+class CircularList<T>(var data: MutableList<T>) {
 
     var curPos = 0
 
@@ -37,7 +37,7 @@ class CircularList<T>(val data: MutableList<T>) {
         return sList
     }
 
-    fun toList() = data
+    fun toList() = data.toList()
 
     fun setSubList(sList: List<T>) {
         var index = curPos
@@ -46,6 +46,17 @@ class CircularList<T>(val data: MutableList<T>) {
             if (++index > data.lastIndex)
                 index = 0
         }
+    }
+
+    fun rotateLeft(n: Int) {
+        val newStart = n % data.size
+        data = (data.subList(newStart, data.size) + data.subList(0, newStart)).toMutableList()
+    }
+
+    fun rotateRight(n: Int) {
+        val newStart = n % data.size
+        val dataReversed = data.toList().reversed()
+        data = (dataReversed.subList(newStart, data.size) + dataReversed.subList(0, newStart)).reversed().toMutableList()
     }
 
     override fun toString() = data.toString()
