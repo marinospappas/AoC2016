@@ -84,7 +84,7 @@ fun List<Char>.reverseRotateBasedOnPositionOfLetter(a: String): List<Char> {
 enum class Instruction(val value: String,
                        val execute: (List<Char>, String, String) -> List<Char>,
                        val reverse: (List<Char>, String, String) -> List<Char>) {
-    SWP_POS("swap position", { l, a, b -> l.swapPosition(a, b) }, { l, a, b -> l.swapPosition(b, a) }),
+    SWP_POS("swap position", { l, a, b -> l.swapPosition(a, b) }, { l, a, b -> l.swapPosition(a, b) }),
     SWP_LTR("swap letter", { l, a, b -> l.swapLetter(a, b) }, { l, a, b -> l.swapLetter(a, b) }),
     REV_POS("reverse positions", { l, a, b -> l.reversePositions(a, b) }, { l, a, b -> l.reversePositions(a, b) }),
     ROT_RGT("rotate right", { l, a, _ -> l.rotateRight(a) }, { l, a, _ -> l.rotateLeft(a) }),
