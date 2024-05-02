@@ -44,8 +44,9 @@ class Day21Test {
     @Test
     @Order(6)
     fun `Solves Part 2`() {
-        println("NA")
-        assert(true)
+        solver.inputString2 = "decab"
+        val result = solver.solvePart2().also { it.println() }
+        assertThat(result).isEqualTo("abcde")
     }
 }
 
