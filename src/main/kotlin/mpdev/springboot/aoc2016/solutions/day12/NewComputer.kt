@@ -1,34 +1,35 @@
 package mpdev.springboot.aoc2016.solutions.day12
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mpdev.springboot.aoc2016.input.InputDataReader
 import mpdev.springboot.aoc2016.solutions.PuzzleSolver
-import mpdev.springboot.aoc2016.utils.Program
+import mpdev.springboot.aoc2016.utils.aocvm.AocVm
+import mpdev.springboot.aoc2016.utils.aocvm.InstructionSet
+import mpdev.springboot.aoc2016.utils.aocvm.OpResultCode
+import mpdev.springboot.aoc2016.utils.aocvm.ParamReadWrite
 import org.springframework.stereotype.Component
 
 @Component
 class NewComputer(inputDataReader: InputDataReader): PuzzleSolver(inputDataReader, 12) {
 
-    lateinit var program: Program
-    val outChannel = Channel<Int>(Channel.UNLIMITED)
+    lateinit var aocVm: AocVm
 
     override fun initialize() {
-        program = Program(inputData)
+        initialiseOpCodes()
+        aocVm = AocVm(inputData.toMutableList().also { it.add(0, "in c") }.also { it.add("out a") }
+            .map { it.replace(" ", ",") })
     }
 
-    suspend fun runProgram(initReg: Map<String,Int> = emptyMap()): Int {
+/*    suspend fun runProgram(initReg: Map<String,Int> = emptyMap()): Int {
         runBlocking {
             val job = launch {  program.run(initReg) }
             job.join()
         }
         return program.getRegister("a")
-    }
+    }*/
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun runProgramWitOutput(initReg: Map<String,Int> = emptyMap()): List<Int> {
+/*    suspend fun runProgramWitOutput(initReg: Map<String,Int> = emptyMap()): List<Int> {
         val result = mutableListOf<Int>()
         runBlocking {
             val job = launch {  program.run(initReg) }
@@ -39,12 +40,15 @@ class NewComputer(inputDataReader: InputDataReader): PuzzleSolver(inputDataReade
             job.cancel()
         }
         return result
-    }
+    }*/
 
     override fun solvePart1(): Int {
-        val result: Int
+        var result: Int
         runBlocking {
-            result = runProgram()
+            aocVm.sendInputToProgram(0)
+            val job = launch { aocVm.runProgram() }
+            aocVm.waitProgram(job)
+            result = aocVm.getOutputFromProgram().last()
         }
         return result
     }
@@ -52,9 +56,19 @@ class NewComputer(inputDataReader: InputDataReader): PuzzleSolver(inputDataReade
     override fun solvePart2(): Int {
         val result: Int
         runBlocking {
-            result = runProgram(mapOf("c" to 1))
+            aocVm.sendInputToProgram(1)
+            val job = launch { aocVm.runProgram() }
+            result = aocVm.getOutputFromProgram().last()
+            aocVm.waitProgram(job)
         }
         return result
     }
 
+    companion object {
+        fun initialiseOpCodes() {
+            InstructionSet.opCodesList["cpy"] = InstructionSet.OpCode("cpy", 2,
+                listOf(ParamReadWrite.R, ParamReadWrite.W)
+            ) { a -> Pair(OpResultCode.SET_MEMORY, listOf(a[1], a[0] as Long)) }
+        }
+    }
 }
