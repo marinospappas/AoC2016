@@ -17,30 +17,8 @@ class NewComputer(inputDataReader: InputDataReader): PuzzleSolver(inputDataReade
 
     override fun initialize() {
         initialiseOpCodes()
-        aocVm = AocVm(inputData.toMutableList().also { it.add(0, "in c") }.also { it.add("out a") }
-            .map { it.replace(" ", ",") })
+        aocVm = AocVm(inputData.toMutableList().also { it.add(0, "in c") }.also { it.add("out a") })
     }
-
-/*    suspend fun runProgram(initReg: Map<String,Int> = emptyMap()): Int {
-        runBlocking {
-            val job = launch {  program.run(initReg) }
-            job.join()
-        }
-        return program.getRegister("a")
-    }*/
-
-/*    suspend fun runProgramWitOutput(initReg: Map<String,Int> = emptyMap()): List<Int> {
-        val result = mutableListOf<Int>()
-        runBlocking {
-            val job = launch {  program.run(initReg) }
-            job.join()
-            while (!outChannel.isEmpty) {
-                result.add(outChannel.receive())
-            }
-            job.cancel()
-        }
-        return result
-    }*/
 
     override fun solvePart1(): Int {
         var result: Int

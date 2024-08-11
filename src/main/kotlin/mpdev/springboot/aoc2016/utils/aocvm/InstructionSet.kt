@@ -46,5 +46,5 @@ enum class ParamReadWrite {
     R, W
 }
 enum class OpResultCode {
-    SET_MEMORY, INCR_PC, INPUT, OUTPUT, EXIT, NONE
+    SET_MEMORY, INCR_PC, INPUT, OUTPUT, EXIT, NONE, CUSTOM
 }
