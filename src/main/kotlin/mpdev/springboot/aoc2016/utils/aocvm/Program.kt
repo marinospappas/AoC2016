@@ -38,7 +38,7 @@ class Program(prog: List<String>, private val ioChannel: List<Channel<Long>> = l
                 SET_MEMORY -> registers[values[0] as String] = valueOf(values[1])
                 INCR_PC -> pc += valueOf(values[0]).toInt() - 1
                 OUTPUT -> {
-                    log.info("AocProg {} writing to output {}", instanceName, values[0])
+                    log.debug("AocProg {} writing to output {}", instanceName, values[0])
                     ioChannel[1].send(valueOf(values[0]))
                     ++outputCount
                 }

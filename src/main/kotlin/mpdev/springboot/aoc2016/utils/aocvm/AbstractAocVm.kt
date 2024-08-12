@@ -1,5 +1,6 @@
 package mpdev.springboot.aoc2016.utils.aocvm
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -18,7 +19,7 @@ abstract class AbstractAocVm {
         val instanceTable = mutableListOf<Program>()
         // the AoC input/output channels
         val ioChannels = Array<Pair<Channel<Long>, Channel<Long>>>(INSTANCE_TABLE_SIZE)
-            { Pair(Channel(Channel.UNLIMITED), Channel(Channel.UNLIMITED)) }
+        { Pair(Channel(Channel.UNLIMITED), Channel(10)) }
     }
 
     /// protected / internal functions
@@ -33,13 +34,13 @@ abstract class AbstractAocVm {
         job.join()
     }
 
-    protected suspend fun setAocProgramInputLong(data: List<Long>, programId: Int = 0) {
+    protected suspend fun setProgramInput(data: List<Long>, programId: Int = 0) {
         log.debug("set program input to {}", data)
         setInputValues(data, ioChannels[programId].first)
     }
 
-    protected suspend fun getAocProgramOutputLong(programId: Int = 0): List<Long> {
-        log.debug("getAocProgramOutputLong called")
+    protected suspend fun getProgramFinalOutputLong(programId: Int = 0): List<Long> {
+        log.debug("getProgramFinalOutputLong called")
         delay(1)      // required in case the program job is still waiting for input
         while (instanceTable[programId].programState == RUNNING) {     // job active = still producing output
             delay(1)
@@ -47,6 +48,18 @@ abstract class AbstractAocVm {
         val output = getOutputValues(ioChannels[programId].second)
         log.debug("returning output: {}", output)
         return output
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    protected suspend fun getProgramAsyncOutputLong(programId: Int = 0): List<Long> {
+        log.debug("getProgramAsyncOutputLong called")
+        val outputValues = mutableListOf<Long>()
+        outputValues.add(ioChannels[programId].second.receive())
+        while (!ioChannels[programId].second.isEmpty) {
+            outputValues.add(ioChannels[programId].second.receive())
+        }
+        log.debug("returning output: {}", outputValues)
+        return outputValues
     }
 
     private suspend fun setInputValues(values: List<Long>, inputChannel: Channel<Long> = ioChannels[0].first) {
@@ -60,8 +73,7 @@ abstract class AbstractAocVm {
             val nextItem = outputChannel.tryReceive().getOrNull()
             if (nextItem != null)
                 outputValues.add(nextItem)
-        }
-        while(nextItem != null)
+        } while(nextItem != null)
         return outputValues
     }
 

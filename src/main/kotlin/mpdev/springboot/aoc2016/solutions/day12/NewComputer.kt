@@ -26,7 +26,7 @@ class NewComputer(inputDataReader: InputDataReader): PuzzleSolver(inputDataReade
             aocVm.sendInputToProgram(0)
             val job = launch { aocVm.runProgram() }
             aocVm.waitProgram(job)
-            result = aocVm.getOutputFromProgram().last()
+            result = aocVm.getFinalOutputFromProgram().last()
         }
         return result
     }
@@ -36,7 +36,7 @@ class NewComputer(inputDataReader: InputDataReader): PuzzleSolver(inputDataReade
         runBlocking {
             aocVm.sendInputToProgram(1)
             val job = launch { aocVm.runProgram() }
-            result = aocVm.getOutputFromProgram().last()
+            result = aocVm.getFinalOutputFromProgram().last()
             aocVm.waitProgram(job)
         }
         return result

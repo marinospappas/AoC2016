@@ -24,16 +24,18 @@ open class AocVm(aocProgram: List<String>,
     }
 
     suspend fun sendInputToProgram(data: Int) {
-        setAocProgramInputLong(listOf(data.toLong()), 0)
+        setProgramInput(listOf(data.toLong()), 0)
     }
 
     suspend fun sendInputToProgram(data: List<Int>) {
-        setAocProgramInputLong(data.map { it.toLong() }, 0)
+        setProgramInput(data.map { it.toLong() }, 0)
     }
 
-    suspend fun getOutputFromProgram() = getAocProgramOutputLong(0).map { it.toInt() }
+    suspend fun getFinalOutputFromProgram() = getProgramFinalOutputLong(0).map { it.toInt() }
+    suspend fun getAsyncOutputFromProgram() = getProgramAsyncOutputLong(0).map { it.toInt() }
 
-    suspend fun getOutputFromProgramLong() = getAocProgramOutputLong(0)
+    suspend fun getFinalOutputFromProgramLong() = getProgramFinalOutputLong(0)
+    suspend fun getAsyncOutputFromProgramLong() = getProgramAsyncOutputLong(0)
 
     fun programIsRunning() = aocProgramIsRunning(0)
 
