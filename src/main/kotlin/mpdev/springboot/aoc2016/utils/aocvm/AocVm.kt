@@ -2,7 +2,7 @@ package mpdev.springboot.aoc2016.utils.aocvm
 
 import kotlinx.coroutines.Job
 
-open class AocVm(aocProgram: List<String>,
+open class AocVm(instructionList: List<String>,
                  instanceNamePrefix: String = DEF_PROG_INSTANCE_PREFIX
 ): AbstractAocVm() {
 
@@ -12,10 +12,14 @@ open class AocVm(aocProgram: List<String>,
         // clears the instance table and creates the first instance of the AocCode program
         if (instanceTable.isNotEmpty())
             instanceTable.clear()
-        instanceTable.add(Program(aocProgram, listOf(ioChannels[0].first, ioChannels[0].second)))
-        mainInstance = instanceTable[0]
+        setupNewInstance(instructionList)
+        mainInstance = instanceTable[0].program
         mainInstance.instanceName = "$instanceNamePrefix-0"
         log.info("AocCode instance [0] configured")
+    }
+
+    fun aocCtl(cmd: AocCmd, value: Any) {
+        aocCtl(0, cmd, value)
     }
 
     suspend fun runProgram(initReg: Map<String, Long> = emptyMap()) {
@@ -45,11 +49,11 @@ open class AocVm(aocProgram: List<String>,
     }
 
     fun setProgramMemory(address: Int, data: Long) {
-        instanceTable[0].setMemory(address, data)
+        setProgramMemory(0, address, data)
     }
 
     fun setProgramMemory(address: Int, data: Int) {
-        setProgramMemory(0, address, data.toLong())
+        setProgramMemory(address, data.toLong())
     }
 
     fun getProgramMemoryLong(address: Int) = getProgramMemoryLong(0, address)

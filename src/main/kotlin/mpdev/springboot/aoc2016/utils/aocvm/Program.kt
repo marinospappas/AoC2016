@@ -31,9 +31,9 @@ class Program(prog: List<String>, private val ioChannel: List<Channel<Long>> = l
         while (pc <= instructionList.lastIndex && outputCount < maxCount) {
             val (instr, params) = instructionList[pc]
             val mappedParams = mapParams(params, instr.paramMode, instr.numberOfParams)
-            log.debug("pc: $pc instruction: ${instr.code} $mappedParams")
+            log.debug("$instanceName pc: $pc instruction: ${instr.code} $mappedParams")
             val (resCode, values) = instr.execute(mappedParams)
-            log.debug("    result: $resCode $values")
+            log.debug("$instanceName     result: $resCode $values")
             when (resCode) {
                 SET_MEMORY -> registers[values[0] as String] = valueOf(values[1])
                 INCR_PC -> pc += valueOf(values[0]).toInt() - 1
@@ -75,7 +75,7 @@ class Program(prog: List<String>, private val ioChannel: List<Channel<Long>> = l
             is Int -> s.toLong()
             is Long -> s
             is String -> registers.getOrPut(s) { 0 }
-            else -> throw AocException("unexpected error PROG001 [$s]")
+            else -> throw AocException("$instanceName unexpected error PROG001 [$s]")
         }
 
     private fun String.toIntOrString() = try {

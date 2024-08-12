@@ -4,8 +4,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mpdev.springboot.aoc2016.input.InputDataReader
 import mpdev.springboot.aoc2016.solutions.PuzzleSolver
-import mpdev.springboot.aoc2016.solutions.day23.NewComputer23
+import mpdev.springboot.aoc2016.solutions.day12.NewComputer
 import mpdev.springboot.aoc2016.utils.AocException
+import mpdev.springboot.aoc2016.utils.aocvm.AbstractAocVm
 import mpdev.springboot.aoc2016.utils.aocvm.AocVm
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
@@ -17,8 +18,9 @@ class NewComputer25(inputDataReader: InputDataReader): PuzzleSolver(inputDataRea
 
 
     override fun initialize() {
-        NewComputer23.initialiseOpCodes()
+        NewComputer.initialiseOpCodes()
         aocVm = AocVm(inputData.toMutableList().also { it.add(0, "in a") }.also { it.add("out a") })
+        aocVm.aocCtl(AbstractAocVm.AocCmd.SET_OUTPUT_BUFFER_SIZE, 10)
     }
 
     override fun solvePart1(): Int {
