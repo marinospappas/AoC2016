@@ -14,6 +14,8 @@ abstract class InstructionSet {
         const val ADD = "add"
         const val SUB = "sub"
         const val MUL = "mul"
+        const val DIV = "div"
+        const val MOD = "mod"
         const val INC = "inc"
         const val DEC = "dec"
         const val JMP = "jmp"
@@ -28,6 +30,8 @@ abstract class InstructionSet {
             ADD to OpCode(ADD, 3, listOf(R, R, W)) { a -> Pair(SET_MEMORY, listOf(a[2], a[0] as Long + a[1] as Long)) },
             SUB to OpCode(SUB, 3, listOf(R, R, W)) { a -> Pair(SET_MEMORY, listOf(a[2], a[0] as Long - a[1] as Long)) },
             MUL to OpCode(MUL, 3, listOf(R, R, W)) { a -> Pair(SET_MEMORY, listOf(a[2], a[0] as Long * a[1] as Long)) },
+            DIV to OpCode(DIV, 3, listOf(R, R, W)) { a -> Pair(SET_MEMORY, listOf(a[2], a[0] as Long / a[1] as Long)) },
+            MOD to OpCode(MOD, 3, listOf(R, R, W)) { a -> Pair(SET_MEMORY, listOf(a[2], a[0] as Long % a[1] as Long)) },
             INC to OpCode(INC, 2, listOf(R, W)) { a -> Pair(SET_MEMORY, listOf(a[1], a[0] as Long + 1L)) },
             DEC to OpCode(DEC, 2, listOf(R, W)) { a -> Pair(SET_MEMORY, listOf(a[1], a[0] as Long - 1L)) },
             JMP to OpCode(JMP, 1, listOf(R)) { a -> Pair(INCR_PC, listOf(a[0] as Long)) },

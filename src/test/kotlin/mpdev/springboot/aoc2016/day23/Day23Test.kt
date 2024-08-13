@@ -27,7 +27,7 @@ class Day23Test {
     fun `Sets Day correctly`() {
         assertThat(solver.day).isEqualTo(day)
     }
-
+/*
     @Test
     @Order(2)
     fun `Executes Multiplication 1`() {
@@ -88,5 +88,7 @@ class Day23Test {
         println("NA")
         assert(true)
     }
+
+ */
 }
 

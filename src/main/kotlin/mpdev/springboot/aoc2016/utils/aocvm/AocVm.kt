@@ -4,39 +4,29 @@ import kotlinx.coroutines.Job
 
 open class AocVm(instructionList: List<String>,
                  instanceNamePrefix: String = DEF_PROG_INSTANCE_PREFIX
-): AbstractAocVm() {
+): AbstractAocVm(instructionList, instanceNamePrefix) {
 
-    private var mainInstance: Program
+    fun newProgram(instructionList: List<String>) = setupNewInstance(instructionList)
 
-    init {
-        // clears the instance table and creates the first instance of the AocCode program
-        if (instanceTable.isNotEmpty())
-            instanceTable.clear()
-        setupNewInstance(instructionList)
-        mainInstance = instanceTable[0].program
-        mainInstance.instanceName = "$instanceNamePrefix-0"
-        log.info("AocCode instance [0] configured")
+    fun aocCtl(cmd: AocCmd, value: Any, programId: Int = 0) {
+        aocCtl(programId, cmd, value)
     }
 
-    fun aocCtl(cmd: AocCmd, value: Any) {
-        aocCtl(0, cmd, value)
+    suspend fun runProgram(initReg: Map<String, Long> = emptyMap(), programId: Int = 0) {
+        log.info("AocCode instance [$programId] starting")
+        runAocProgram(programId, initReg)
     }
 
-    suspend fun runProgram(initReg: Map<String, Long> = emptyMap()) {
-        log.info("AocCode instance [0] starting")
-        runAocProgram(0, initReg)
+    suspend fun sendInputToProgram(data: Int, programId: Int = 0) {
+        setProgramInput(listOf(data.toLong()), programId)
     }
 
-    suspend fun sendInputToProgram(data: Int) {
-        setProgramInput(listOf(data.toLong()), 0)
-    }
-
-    suspend fun sendInputToProgram(data: List<Int>) {
-        setProgramInput(data.map { it.toLong() }, 0)
+    suspend fun sendInputToProgram(data: List<Int>, programId: Int = 0) {
+        setProgramInput(data.map { it.toLong() }, programId)
     }
 
     suspend fun getFinalOutputFromProgram() = getProgramFinalOutputLong(0).map { it.toInt() }
-    suspend fun getAsyncOutputFromProgram() = getProgramAsyncOutputLong(0).map { it.toInt() }
+    suspend fun getAsyncOutputFromProgram(programId: Int = 0) = getProgramAsyncOutputLong(programId).map { it.toInt() }
 
     suspend fun getFinalOutputFromProgramLong() = getProgramFinalOutputLong(0)
     suspend fun getAsyncOutputFromProgramLong() = getProgramAsyncOutputLong(0)

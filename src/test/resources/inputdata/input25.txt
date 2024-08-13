@@ -1,4 +1,4 @@
-#TEST
+#!indent=10
 
 #Part 1
           cpy a d
@@ -30,6 +30,10 @@ L004:     dec b
           inc a
           jnz 1 -7  L007
 ##### end of part 2
+# a = 2532 + original a (from part 1)
+# b = 0
+# c = if (a is even) 2 else 1
+# a = a / 2
 
 #Part 3
 L005:     cpy 2 b
@@ -42,8 +46,8 @@ L008:     dec b
 
 
 L009:     jnz 0 0
-          out b
-##### end of prat 3
+##### end of part 3
 
+          out b
           jnz a -19   L002
           jnz 1 -21   L011

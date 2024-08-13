@@ -9,24 +9,29 @@ import mpdev.springboot.aoc2016.utils.aocvm.ProgramState.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-abstract class AbstractAocVm {
+abstract class AbstractAocVm(instructionList: List<String>, instanceNamePrefix: String) {
 
     protected val log: Logger = LoggerFactory.getLogger(this::class.java)
 
-    companion object {
-        const val DEF_PROG_INSTANCE_PREFIX = "aocprog"
-        // the AoCVM "process table"
-        val instanceTable = mutableListOf<AocInstance>()
-        // the AoC input/output channels
+    // the AoCVM "process table"
+    private val instanceTable = mutableListOf<AocInstance>()
+
+    init {
+        // clears the instance table and creates the first instance of the AocCode program
+        instanceTable.clear()
+        setupNewInstance(instructionList)
+        instanceTable[0].program.instanceName = "$instanceNamePrefix-0"
+        log.info("AocCode instance [0] configured")
     }
 
-    fun setupNewInstance(instructionList: List<String>, programId: Int = -1) {
+    companion object {
+        const val DEF_PROG_INSTANCE_PREFIX = "aocprog"
+    }
+
+    protected fun setupNewInstance(instructionList: List<String>): Int {
         val ioChannels = mutableListOf<Channel<Long>>(Channel(UNLIMITED),Channel(UNLIMITED))
-        val newInstance = AocInstance(Program(instructionList, ioChannels), ioChannels)
-        if (programId >= 0)
-            instanceTable[programId] = newInstance
-        else
-            instanceTable.add(newInstance)
+        instanceTable.add(AocInstance(Program(instructionList, ioChannels), ioChannels))
+        return instanceTable.lastIndex
     }
 
     protected fun aocCtl(programId: Int, cmd: AocCmd, value: Any) {
@@ -36,23 +41,23 @@ abstract class AbstractAocVm {
     }
 
     /// protected / internal functions
-    suspend fun runAocProgram(programId: Int = 0, initReg: Map<String, Long> = emptyMap()) {
+    suspend fun runAocProgram(programId: Int, initReg: Map<String, Long> = emptyMap()) {
         instanceTable[programId].program.run(initReg)
     }
 
-    protected fun aocProgramIsRunning(programId: Int = 0) =
+    protected fun aocProgramIsRunning(programId: Int) =
         instanceTable[programId].program.programState != COMPLETED
 
     protected suspend fun waitAocProgram(job: Job) {
         job.join()
     }
 
-    protected suspend fun setProgramInput(data: List<Long>, programId: Int = 0) {
+    protected suspend fun setProgramInput(data: List<Long>, programId: Int) {
         log.debug("set program input to {}", data)
         setInputValues(data, instanceTable[programId].ioChannels[0])
     }
 
-    protected suspend fun getProgramFinalOutputLong(programId: Int = 0): List<Long> {
+    protected suspend fun getProgramFinalOutputLong(programId: Int): List<Long> {
         log.debug("getProgramFinalOutputLong called")
         delay(1)      // required in case the program job is still waiting for input
         while (instanceTable[programId].program.programState == RUNNING) {     // job active = still producing output
@@ -64,7 +69,7 @@ abstract class AbstractAocVm {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    protected suspend fun getProgramAsyncOutputLong(programId: Int = 0): List<Long> {
+    protected suspend fun getProgramAsyncOutputLong(programId: Int): List<Long> {
         log.debug("getProgramAsyncOutputLong called")
         val outputValues = mutableListOf<Long>()
         outputValues.add(instanceTable[programId].ioChannels[1].receive())
@@ -75,11 +80,11 @@ abstract class AbstractAocVm {
         return outputValues
     }
 
-    private suspend fun setInputValues(values: List<Long>, inputChannel: Channel<Long> = instanceTable[0].ioChannels[0]) {
+    private suspend fun setInputValues(values: List<Long>, inputChannel: Channel<Long>) {
         values.forEach { v -> inputChannel.send(v) }
     }
 
-    private suspend fun getOutputValues(outputChannel: Channel<Long> = instanceTable[0].ioChannels[1]): List<Long> {
+    private suspend fun getOutputValues(outputChannel: Channel<Long>): List<Long> {
         val outputValues = mutableListOf<Long>()
         outputValues.add(outputChannel.receive())
         do {

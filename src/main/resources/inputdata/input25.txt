@@ -1,23 +1,23 @@
 cpy a d
-cpy 4 c
-cpy 633 b
-inc d
-dec b
-jnz b -2
-dec c
-jnz c -5
+add d 2532
+nop
+nop
+nop
+nop
+nop
+nop
 cpy d a
 jnz 0 0
-cpy a b
-cpy 0 a
-cpy 2 c
-jnz b 2
-jnz 1 6
-dec b
-dec c
-jnz c -4
-inc a
-jnz 1 -7
+cpy a c
+div a 2
+mod c 2
+jnz c 2
+add c 2
+nop
+nop
+nop
+nop
+nop
 cpy 2 b
 jnz c 2
 jnz 1 4

@@ -16,10 +16,9 @@ class NewComputer25(inputDataReader: InputDataReader): PuzzleSolver(inputDataRea
 
     lateinit var aocVm: AocVm
 
-
     override fun initialize() {
         NewComputer.initialiseOpCodes()
-        aocVm = AocVm(inputData.toMutableList().also { it.add(0, "in a") }.also { it.add("out a") })
+        aocVm = AocVm(inputData)
         aocVm.aocCtl(AbstractAocVm.AocCmd.SET_OUTPUT_BUFFER_SIZE, 10)
     }
 
@@ -28,8 +27,7 @@ class NewComputer25(inputDataReader: InputDataReader): PuzzleSolver(inputDataRea
             val result = mutableListOf<Int>()
             var solved = false
             runBlocking {
-                aocVm.sendInputToProgram(a)
-                val job = launch { aocVm.runProgram() }
+                val job = launch { aocVm.runProgram(mapOf("a" to a.toLong())) }
                 while (result.size < 50) {
                     result.addAll(aocVm.getAsyncOutputFromProgram())
                 }

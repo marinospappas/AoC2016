@@ -14,16 +14,23 @@ class Program(prog: List<String>, private val ioChannel: List<Channel<Long>> = l
     var programState: ProgramState = READY
     var instanceName = ""
 
-    private val instructionList: MutableList< Pair<InstructionSet.OpCode, List<Any>> > = if (prog[0].equals("#test", true))
-        mutableListOf()
+    private val sourcePgmOptions: Map<String, String> =
+        if (prog.isNotEmpty() && prog[0].startsWith("#!"))
+            prog[0].substring(2).split(",").map { it.split("=") }.associate { it[0] to it[1] }
     else
-        prog.map { it.split(" ") }
-            .map { Pair(getOpCode(it[0]), it.subList(1, it.size).map { v -> v.toIntOrString() }) }
-            .toMutableList()
+        emptyMap()
+
+    private val instructionList: MutableList< Pair<InstructionSet.OpCode, List<Any>> > = prog.asSequence()
+        .filterNot { it.startsWith('#') || it.isEmpty() }
+        .map { it.substring(if (sourcePgmOptions["indent"] == null) 0 else sourcePgmOptions["indent"]?.toInt()!!) }
+        .map { it.split(" ") }
+        .map { Pair(getOpCode(it[0]), it.subList(1, it.size).map { v -> v.toIntOrString() }) }
+        .toMutableList()
 
     private val registers = mutableMapOf<String,Long>()
 
     suspend fun run(initReg: Map<String, Long> = emptyMap(), maxCount: Int = Int.MAX_VALUE) {
+        log.debug("$instanceName starting, init registers: $initReg")
         var pc = 0
         var outputCount = 0
         registers.clear()
