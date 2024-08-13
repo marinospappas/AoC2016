@@ -9,7 +9,7 @@ import mpdev.springboot.aoc2016.utils.aocvm.ProgramState.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-abstract class AbstractAocVm(instructionList: List<String>, instanceNamePrefix: String) {
+abstract class AbstractAocVm(instructionList: List<String>, private val instanceNamePrefix: String) {
 
     protected val log: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -20,8 +20,6 @@ abstract class AbstractAocVm(instructionList: List<String>, instanceNamePrefix: 
         // clears the instance table and creates the first instance of the AocCode program
         instanceTable.clear()
         setupNewInstance(instructionList)
-        instanceTable[0].program.instanceName = "$instanceNamePrefix-0"
-        log.info("AocCode instance [0] configured")
     }
 
     companion object {
@@ -31,7 +29,10 @@ abstract class AbstractAocVm(instructionList: List<String>, instanceNamePrefix: 
     protected fun setupNewInstance(instructionList: List<String>): Int {
         val ioChannels = mutableListOf<Channel<Long>>(Channel(UNLIMITED),Channel(UNLIMITED))
         instanceTable.add(AocInstance(Program(instructionList, ioChannels), ioChannels))
-        return instanceTable.lastIndex
+        val programId = instanceTable.lastIndex
+        instanceTable[programId].program.instanceName = "$instanceNamePrefix-$programId"
+        log.info("AocCode instance [$programId] configured")
+        return programId
     }
 
     protected fun aocCtl(programId: Int, cmd: AocCmd, value: Any) {
@@ -110,14 +111,6 @@ abstract class AbstractAocVm(instructionList: List<String>, instanceNamePrefix: 
     protected fun getProgramRegisterLong(programId: Int, reg: String) = instanceTable[programId].program.getRegister(reg)
 
     protected fun getProgramRegister(programId: Int, reg: String) = getProgramRegisterLong(programId, reg).toInt()
-
-    protected fun setProgramRegisterLong(programId: Int, reg: String, data: Long) {
-        instanceTable[programId].program.setRegister(reg, data)
-    }
-
-    protected fun setProgramRegister(programId: Int, reg: String, data: Int) {
-        setProgramRegisterLong(programId, reg, data.toLong())
-    }
 
     class AocInstance(val program: Program, val ioChannels: MutableList<Channel<Long>>)
 

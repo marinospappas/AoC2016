@@ -74,7 +74,7 @@ class Day23Test {
             println("d = ${solver.program.getRegister("d")}")
         }
     }
-
+ */
     @Test
     @Order(4)
     fun `Solves Part 1`() {
@@ -88,7 +88,5 @@ class Day23Test {
         println("NA")
         assert(true)
     }
-
- */
 }
 

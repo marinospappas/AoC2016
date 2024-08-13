@@ -2,9 +2,8 @@ package mpdev.springboot.aoc2016.utils.aocvm
 
 import kotlinx.coroutines.Job
 
-open class AocVm(instructionList: List<String>,
-                 instanceNamePrefix: String = DEF_PROG_INSTANCE_PREFIX
-): AbstractAocVm(instructionList, instanceNamePrefix) {
+open class AocVm(instructionList: List<String>, instanceNamePrefix: String = DEF_PROG_INSTANCE_PREFIX):
+    AbstractAocVm(instructionList, instanceNamePrefix) {
 
     fun newProgram(instructionList: List<String>) = setupNewInstance(instructionList)
 
@@ -54,11 +53,4 @@ open class AocVm(instructionList: List<String>,
 
     fun getProgramRegister(reg: String) = getProgramRegisterLong(reg).toInt()
 
-    fun setProgramRegister(reg: String, data: Long) {
-        setProgramRegisterLong(0, reg, data)
-    }
-
-    fun setProgramRegister(reg: String, data: Int) {
-        setProgramRegister(reg, data.toLong())
-    }
 }
