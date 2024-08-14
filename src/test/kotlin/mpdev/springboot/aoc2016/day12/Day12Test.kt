@@ -3,7 +3,6 @@ package mpdev.springboot.aoc2016.day12
 import kotlinx.coroutines.runBlocking
 import mpdev.springboot.aoc2016.input.InputDataReader
 import mpdev.springboot.aoc2016.solutions.day12.NewComputer
-import mpdev.springboot.aoc2016.utils.Program
 import mpdev.springboot.aoc2016.utils.aocvm.AocVm
 import mpdev.springboot.aoc2016.utils.println
 import org.assertj.core.api.Assertions.assertThat
@@ -46,35 +45,36 @@ class Day12Test {
     }
 
     @ParameterizedTest
-    @CsvSource(value = ["0", "1"])
+    @CsvSource(value = ["0, 26", "1, 33"])
     @Order(5)
-    fun `Executes Program Part 1`(c: Long) {
+    fun `Executes Program Part 1`(c: Long, expected: Int) {
         val testCode = listOf(
-            "cpy,1,a",
-            "cpy,1,b",
-            "cpy,26,d",
-            "jnz,c,2",
-            "jnz,1,5",
-            "cpy,7,c",
-            "inc,d",
-            "dec,c",
-            "jnz,c,-2"
+            "cpy 1 a",
+            "cpy 1 b",
+            "cpy 26 d",
+            "jnz c 2",
+            "jnz 1 5",
+            "cpy 7 c",
+            "inc d",
+            "dec c",
+            "jnz c -2"
         )
         val aocTest = AocVm(testCode)
         runBlocking {
-            // sets a to 26 or 33 depending on the initial value of c
+            // sets d to 26 or 33 depending on the initial value of c
             aocTest.runProgram(mapOf("c" to c))
             println("a = ${aocTest.getProgramRegister("a")}")
             println("b = ${aocTest.getProgramRegister("b")}")
             println("c = ${aocTest.getProgramRegister("c")}")
             println("d = ${aocTest.getProgramRegister("d")}")
         }
+        assertThat(aocTest.getProgramRegister("d")).isEqualTo(expected)
     }
 
-    /*@ParameterizedTest
+    @ParameterizedTest
     @CsvSource(value = ["26", "33"])
     @Order(6)
-    fun `Executes Program Part 2`(d: Int) {
+    fun `Executes Program Part 2`(d: Long) {
         val testCode = listOf(
             "cpy a c",
             "inc a",
@@ -85,19 +85,37 @@ class Day12Test {
             "dec d",
             "jnz d -7",
         )
-        solver.program = Program(testCode, solver.outChannel)
+        val testCode1 = listOf(
+            "cpy a c",
+            "add a b",
+            "out a",
+            "cpy c b",
+            "dec d",
+            "jnz d -5"
+        )
+        val aocTest = AocVm(testCode)
+        aocTest.newProgram(testCode1)
+        val result = mutableListOf<Long>()
+        val result1 = mutableListOf<Long>()
         runBlocking {
             // calculates the 28th (26+2) or 35th (33+2) Fibonacci number
-            val result = solver.runProgramWitOutput(mapOf("a" to 1, "b" to 1, "c" to 0, "d" to d))
+            aocTest.runProgram(mapOf("a" to 1, "b" to 1, "c" to 0, "d" to d))
+            result.addAll(aocTest.getAsyncOutputFromProgramLong())
+            println("a = ${result[0]}")
             println("values of a: $result")
-            println("a = ${solver.program.getRegister("a")}")
-            println("b = ${solver.program.getRegister("b")}")
-            println("c = ${solver.program.getRegister("c")}")
-            println("d = ${solver.program.getRegister("d")}")
+            println("a = ${aocTest.getProgramRegisterLong("a")}")
+            println("b = ${aocTest.getProgramRegisterLong("b")}")
+            println("c = ${aocTest.getProgramRegisterLong("c")}")
+            println("d = ${aocTest.getProgramRegisterLong("d")}")
+
+            aocTest.runProgram(mapOf("a" to 1, "b" to 1, "c" to 0, "d" to d), programId = 1)
+            result1.addAll(aocTest.getAsyncOutputFromProgramLong(1))
+            println("a = ${result1[0]}")
+            println("values of a: $result1")
             // the final part of the code adds 196 to it
         }
+        assertThat(result1).isEqualTo(result)
     }
-     */
 
     @Test
     @Order(7)

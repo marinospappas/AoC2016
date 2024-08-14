@@ -28,7 +28,7 @@ open class AocVm(instructionList: List<String>, instanceNamePrefix: String = DEF
     suspend fun getAsyncOutputFromProgram(programId: Int = 0) = getProgramAsyncOutputLong(programId).map { it.toInt() }
 
     suspend fun getFinalOutputFromProgramLong() = getProgramFinalOutputLong(0)
-    suspend fun getAsyncOutputFromProgramLong() = getProgramAsyncOutputLong(0)
+    suspend fun getAsyncOutputFromProgramLong(programId: Int = 0) = getProgramAsyncOutputLong(programId)
 
     fun programIsRunning() = aocProgramIsRunning(0)
 
